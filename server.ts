@@ -4,7 +4,7 @@ const request = require('request');
 let app = express();
 const port = process.env.PORT || 8000;
 
-const explorerApi = require('../api/ExplorerApi.ts');
+const explorerApi = require('./api/ExplorerApi.ts');
 const neutrinoContractAddress = "3PC9BfRwJWWiw9AREE2B3eWzCks3CYtg4yo";
 const nodeUrl = "http://nodes.wavesnodes.com/";
 
@@ -50,6 +50,5 @@ app.get('/api/test_connection', async (req, res) => {
 
 //Listener
 let server = app.listen(port, function () {
-     //console.log("Running express-api on port " + port);
-
+     console.log("Running express-api on port " + port);
 });

@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "start":"ts-node server.js",
   "scripts": {
+    "start": "ts-node --log-error server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
