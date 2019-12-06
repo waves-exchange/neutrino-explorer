@@ -71,6 +71,18 @@ app.get('/api/get_staked', async (req, res) => {
   }
 });
 
+app.get('/api/getAnnualYield', async (req, res) => {
+  try {
+    let annualYield = await explorerApiObject.getAnnualYield();
+
+    res.status(200).send(annualYield.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.send("N/A");
+  }
+});
+
 //Tests get requests
 app.get('/api/test_connection', async (req, res) => {
   try {

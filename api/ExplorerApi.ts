@@ -70,8 +70,12 @@ export class ExplorerApi {
       return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/1000000;
     }
 
-    // public async getAnnualYield():Promise<number>{
-    //
-    //   return <number>(await )
-    // }
+    public async getAnnualYield():Promise<number>{
+      const monetaryConstant = 6.85;
+      const leasingShare = 0.9;
+      const stakingShare = await this.getStaked()/await this.getTotalIssued();
+
+      return <number>(leasingShare*monetaryConstant/stakingShare);
+    }
+
 }
