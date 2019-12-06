@@ -31,7 +31,7 @@ app.get('/api/get_current_price', async (req, res) => {
   }
   catch(error){
     console.log(error);
-    res.send("N/A");
+    res.sendStatus(500);
   }
 });
 
@@ -43,7 +43,7 @@ app.get('/api/get_current_balance', async (req, res) => {
   }
   catch(error){
     console.log(error);
-    res.send("N/A");
+    res.sendStatus(500);
   }
 });
 
@@ -55,7 +55,7 @@ app.get('/api/get_total_issued', async (req, res) => {
   }
   catch(error){
     console.log(error);
-    res.send("N/A");
+    res.sendStatus(500);
   }
 });
 
@@ -67,7 +67,7 @@ app.get('/api/get_staked', async (req, res) => {
   }
   catch(error){
     console.log(error);
-    res.send("N/A");
+    res.sendStatus(500);
   }
 });
 
@@ -79,7 +79,7 @@ app.get('/api/get_annual_yield', async (req, res) => {
   }
   catch(error){
     console.log(error);
-    res.send("N/A");
+    res.sendStatus(500);
   }
 });
 
@@ -91,17 +91,7 @@ app.get('/api/get_circulating_supply', async (req, res) => {
   }
   catch(error){
     console.log(error);
-    res.send("N/A");
-  }
-});
-
-//Tests get requests
-app.get('/api/test_connection', async (req, res) => {
-  try {
-    res.send("Express is online!");
-  }
-  catch(error){
-    res.send(error);
+    res.sendStatus(500);
   }
 });
 
