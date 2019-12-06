@@ -71,11 +71,23 @@ app.get('/api/get_staked', async (req, res) => {
   }
 });
 
-app.get('/api/getAnnualYield', async (req, res) => {
+app.get('/api/get_annual_yield', async (req, res) => {
   try {
     let annualYield = await explorerApiObject.getAnnualYield();
 
     res.status(200).send(annualYield.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.send("N/A");
+  }
+});
+
+app.get('/api/get_circulating_supply', async (req, res) => {
+  try {
+    let circulatingSupply = await explorerApiObject.getCirculatingSupply();
+
+    res.status(200).send(circulatingSupply.toString());
   }
   catch(error){
     console.log(error);

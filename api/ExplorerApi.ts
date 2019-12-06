@@ -49,6 +49,28 @@ export class ExplorerApi {
         this.nodeUrl = nodeUrl;
     }
 
+    //Helpers
+    private async getDecimals():Promise<number>{
+      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
+      const assetDecimals = assetObject.data.decimals;
+
+      return <number>(assetDecimals);
+    }
+
+    private async getAssetQuantity(){
+      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
+      const assetQuantity = assetObject.data.quantity;
+
+      return <number>(assetQuantity);
+    }
+
+    private async getAssetBalance(){
+      const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, this.neutrinoContractAddress, this.nodeUrl);
+      return <number>(assetBalance);
+    }
+
+
+    //Public API methods
     public async getPrice():Promise<number> {
         return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
     }
@@ -59,15 +81,16 @@ export class ExplorerApi {
 
     public async getTotalIssued():Promise<number>{
       const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
-      const assetQuantity = assetObject.data.quantity;
-      const assetDecimals = assetObject.data.decimals;
+      const assetQuantity = await this.getAssetQuantity();
+      const assetDecimals = await this.getDecimals();
 
-      const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, this.neutrinoContractAddress, this.nodeUrl);
+      const assetBalance = await this.getAssetBalance();
+
       return <number>((assetQuantity - assetBalance)/(10**assetDecimals));
     }
 
     public async getStaked():Promise<number>{
-      return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/1000000;
+      return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/10**await this.getDecimals();
     }
 
     public async getAnnualYield():Promise<number>{
@@ -76,6 +99,10 @@ export class ExplorerApi {
       const stakingShare = await this.getStaked()/await this.getTotalIssued();
 
       return <number>(leasingShare*monetaryConstant/stakingShare);
+    }
+
+    public async getCirculatingSupply():Promise<number>{
+      return <number>(await this.getTotalIssued() - await this.getStaked());
     }
 
 }
