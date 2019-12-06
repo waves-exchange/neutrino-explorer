@@ -6,4 +6,5 @@ export class NeutrinoContractKeys{
     static PrefixBalanceUnlockBlock = "balance_unlock_block_"
     static PrefixPriceIndexKey = "price_index_"
     static LiquidationContractAddressKey = "liquidation_contract"
+    static RpdContractAddressKey = "rpd_contract"
 }

@@ -1,9 +1,11 @@
+import axios from 'axios';
 import { nodeInteraction } from "@waves/waves-transactions";
+import { accountData, accountDataByKey } from "@waves/waves-transactions/dist/nodeInteraction";
+
 import { NeutrinoContractKeys } from "./contractKeys/NeutrinoContractKeys";
 import { ControlContractKeys } from "./contractKeys/ControlContractKeys";
-import { accountData, accountDataByKey } from "@waves/waves-transactions/dist/nodeInteraction";
+import { RpdContractKeys } from "./contractKeys/RpdContractKeys";
 import { OrderKeys } from "./contractKeys/OrderKeys";
-import axios from 'axios';
 
 
 export class ExplorerApi {
@@ -11,28 +13,39 @@ export class ExplorerApi {
     neutrinoContractAddress: string;
     auctionContractAddress: string;
     controlContractAddress: string;
+    rpdContractAddress: string;
     nodeUrl: string;
     neutrinoAssetId: string;
     bondAssetId: string;
-    liquidationContract: string;
+    liquidationContractAddress: string;
 
     public static async create(nodeUrl: string, neutrinoContractAddress: string){
         const accountDataState = await nodeInteraction.accountData(neutrinoContractAddress, nodeUrl);
+
         const auctionContractAddress = <string>accountDataState[NeutrinoContractKeys.AuctionContractAddressKey].value
         const controlContractAddress = <string>accountDataState[NeutrinoContractKeys.ControlContractAddressKey].value
+        const liquidationContractAddress = <string>accountDataState[NeutrinoContractKeys.LiquidationContractAddressKey].value
+        const rpdContractAddress = <string>accountDataState[NeutrinoContractKeys.RpdContractAddressKey].value
+
+
         const neutrinoAssetId = <string>accountDataState[NeutrinoContractKeys.NeutrinoAssetIdKey].value
         const bondAssetId = <string>accountDataState[NeutrinoContractKeys.BondAssetIdKey].value
-        const liquidationContract = <string>accountDataState[NeutrinoContractKeys.LiquidationContractAddressKey].value
-        return new ExplorerApi(nodeUrl, neutrinoContractAddress, auctionContractAddress, controlContractAddress, liquidationContract, neutrinoAssetId, bondAssetId)
+
+
+        const stakedBalance = <string>accountDataState[RpdContractKeys.BalanceKey].value
+
+        return new ExplorerApi(nodeUrl, neutrinoContractAddress, auctionContractAddress, controlContractAddress, liquidationContractAddress, rpdContractAddress, neutrinoAssetId, bondAssetId)
     }
 
-    public constructor(nodeUrl: string, neutrinoContractAddress: string, auctionContractAddress: string, controlContractAddress: string, liquidationContract: string, neutrinoAssetId: string, bondAssetId: string){
+    public constructor(nodeUrl: string, neutrinoContractAddress: string, auctionContractAddress: string, controlContractAddress: string, liquidationContractAddress: string, rpdContractAddress: string, neutrinoAssetId: string, bondAssetId: string){
         this.neutrinoContractAddress = neutrinoContractAddress;
         this.auctionContractAddress = auctionContractAddress;
         this.controlContractAddress = controlContractAddress;
+        this.liquidationContractAddress = liquidationContractAddress;
+        this.rpdContractAddress = rpdContractAddress;
+
         this.neutrinoAssetId = neutrinoAssetId;
         this.bondAssetId = bondAssetId;
-        this.liquidationContract = liquidationContract;
         this.nodeUrl = nodeUrl;
     }
 
@@ -48,11 +61,17 @@ export class ExplorerApi {
       const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
       const assetQuantity = assetObject.data.quantity;
       const assetDecimals = assetObject.data.decimals;
-      console.log(assetObject);
-      // const assetDecimal = asset
 
       const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, this.neutrinoContractAddress, this.nodeUrl);
       return <number>((assetQuantity - assetBalance)/(10**assetDecimals));
     }
 
+    public async getStaked():Promise<number>{
+      return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/1000000;
+    }
+
+    // public async getAnnualYield():Promise<number>{
+    //
+    //   return <number>(await )
+    // }
 }

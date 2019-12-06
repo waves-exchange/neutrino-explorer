@@ -59,6 +59,18 @@ app.get('/api/get_total_issued', async (req, res) => {
   }
 });
 
+app.get('/api/get_staked', async (req, res) => {
+  try {
+    let staked = await explorerApiObject.getStaked();
+
+    res.status(200).send(staked.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.send("N/A");
+  }
+});
+
 //Tests get requests
 app.get('/api/test_connection', async (req, res) => {
   try {
