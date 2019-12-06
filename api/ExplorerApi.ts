@@ -1,8 +1,10 @@
-import { nodeInteraction } from "@waves/waves-transactions"
+import { nodeInteraction } from "@waves/waves-transactions";
 import { NeutrinoContractKeys } from "./contractKeys/NeutrinoContractKeys";
 import { ControlContractKeys } from "./contractKeys/ControlContractKeys";
 import { accountData, accountDataByKey } from "@waves/waves-transactions/dist/nodeInteraction";
 import { OrderKeys } from "./contractKeys/OrderKeys";
+import axios from 'axios';
+
 
 export class ExplorerApi {
     static readonly WAVELET: number = (10 ** 8);
@@ -34,12 +36,23 @@ export class ExplorerApi {
         this.nodeUrl = nodeUrl;
     }
 
-    public async getPrice(): Promise<number> {
+    public async getPrice():Promise<number> {
         return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
     }
 
     public async getBalance():Promise<number> {
       return <number>(await nodeInteraction.balance(this.neutrinoContractAddress, this.nodeUrl)/ExplorerApi.WAVELET);
+    }
+
+    public async getTotalIssued():Promise<number>{
+      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
+      const assetQuantity = assetObject.data.quantity;
+      const assetDecimals = assetObject.data.decimals;
+      console.log(assetObject);
+      // const assetDecimal = asset
+
+      const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, this.neutrinoContractAddress, this.nodeUrl);
+      return <number>((assetQuantity - assetBalance)/(10**assetDecimals));
     }
 
 }

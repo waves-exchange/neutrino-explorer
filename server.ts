@@ -1,5 +1,4 @@
 const express = require('express');
-const request = require('request');
 
 let app = express();
 const port = process.env.PORT || 8000;
@@ -38,9 +37,21 @@ app.get('/api/get_current_price', async (req, res) => {
 
 app.get('/api/get_current_balance', async (req, res) => {
   try {
-    let price = await explorerApiObject.getBalance();
+    let balance = await explorerApiObject.getBalance();
 
-    res.status(200).send(price.toString());
+    res.status(200).send(balance.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.send("N/A");
+  }
+});
+
+app.get('/api/get_total_issued', async (req, res) => {
+  try {
+    let total_issued = await explorerApiObject.getTotalIssued();
+
+    res.status(200).send(total_issued.toString());
   }
   catch(error){
     console.log(error);
