@@ -5,6 +5,7 @@ import { accountData, accountDataByKey } from "@waves/waves-transactions/dist/no
 import { NeutrinoContractKeys } from "./contractKeys/NeutrinoContractKeys";
 import { ControlContractKeys } from "./contractKeys/ControlContractKeys";
 import { RpdContractKeys } from "./contractKeys/RpdContractKeys";
+import { AuctionContractKeys } from "./contractKeys/AuctionContractKeys";
 import { OrderKeys } from "./contractKeys/OrderKeys";
 
 
@@ -32,7 +33,8 @@ export class ExplorerApi {
         const bondAssetId = <string>accountDataState[NeutrinoContractKeys.BondAssetIdKey].value
 
 
-        const stakedBalance = <string>accountDataState[RpdContractKeys.BalanceKey].value
+        const stakedBalanceKey = <string>accountDataState[RpdContractKeys.BalanceKey].value
+        const neutrinoLockedBalanceKey = <string>accountDataState[AuctionContractKeys.WavesLockedBalanceKey].value
 
         return new ExplorerApi(nodeUrl, neutrinoContractAddress, auctionContractAddress, controlContractAddress, liquidationContractAddress, rpdContractAddress, neutrinoAssetId, bondAssetId)
     }
@@ -64,9 +66,20 @@ export class ExplorerApi {
       return <number>(assetQuantity);
     }
 
-    private async getAssetBalance(){
+    private async getNeutrinoBalance(){
       const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, this.neutrinoContractAddress, this.nodeUrl);
       return <number>(assetBalance);
+    }
+
+    // private async getAccountDataByKey(key, contractAddress):Promise<number>{
+    //       return <number>(await nodeInteraction.accountDataByKey(key, controlContract, this.nodeUrl)).value/100;
+    // }
+    //
+    private async getNeutrinoLockedBalance():Promise<number>{
+      console.log(AuctionContractKeys.WavesLockedBalanceKey);
+      console.log(this.auctionContractAddress);
+
+      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value/100;
     }
 
 
@@ -84,7 +97,7 @@ export class ExplorerApi {
       const assetQuantity = await this.getAssetQuantity();
       const assetDecimals = await this.getDecimals();
 
-      const assetBalance = await this.getAssetBalance();
+      const assetBalance = await this.getNeutrinoBalance();
 
       return <number>((assetQuantity - assetBalance)/(10**assetDecimals));
     }
@@ -103,6 +116,16 @@ export class ExplorerApi {
 
     public async getCirculatingSupply():Promise<number>{
       return <number>(await this.getTotalIssued() - await this.getStaked());
+    }
+
+    public async getDeficit():Promise<number>{
+      let neutrinoSupply = await this.getAssetQuantity() - await this.getNeutrinoBalance() + await this.getNeutrinoLockedBalance();
+      // let reserve = wavesBalance(neutrinoContract) - wavesLockedBalance; //TODO
+      let price = await this.getPrice();
+      // let deficit = neutrinoSupply - (reserve*price/100*PAULI/WAVELET); //TODO
+
+      return <number>(0);//TODO
+
     }
 
 }
