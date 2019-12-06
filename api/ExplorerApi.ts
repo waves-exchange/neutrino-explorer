@@ -5,6 +5,7 @@ import { accountData, accountDataByKey } from "@waves/waves-transactions/dist/no
 import { OrderKeys } from "./contractKeys/OrderKeys";
 
 export class ExplorerApi {
+    static readonly WAVELET: number = (10 ** 8);
     neutrinoContractAddress: string;
     auctionContractAddress: string;
     controlContractAddress: string;
@@ -25,7 +26,6 @@ export class ExplorerApi {
 
     public constructor(nodeUrl: string, neutrinoContractAddress: string, auctionContractAddress: string, controlContractAddress: string, liquidationContract: string, neutrinoAssetId: string, bondAssetId: string){
         this.neutrinoContractAddress = neutrinoContractAddress;
-        this.neutrinoContractAddress = neutrinoContractAddress;
         this.auctionContractAddress = auctionContractAddress;
         this.controlContractAddress = controlContractAddress;
         this.neutrinoAssetId = neutrinoAssetId;
@@ -36,6 +36,10 @@ export class ExplorerApi {
 
     public async getPrice(): Promise<number> {
         return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
+    }
+
+    public async getBalance():Promise<number> {
+      return <number>(await nodeInteraction.balance(this.neutrinoContractAddress, this.nodeUrl)/ExplorerApi.WAVELET);
     }
 
 }

@@ -20,7 +20,6 @@ async function connectExplorerApi(nodeUrl, neutrinoContractAddress){
 let explorerApiObject;
 (async function (){
   explorerApiObject = await connectExplorerApi(nodeUrl, neutrinoContractAddress);
-  explorerApiObject.getPrice();
 })();
 
 
@@ -28,6 +27,18 @@ let explorerApiObject;
 app.get('/api/get_current_price', async (req, res) => {
   try {
     let price = await explorerApiObject.getPrice();
+
+    res.status(200).send(price.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.send("N/A");
+  }
+});
+
+app.get('/api/get_current_balance', async (req, res) => {
+  try {
+    let price = await explorerApiObject.getBalance();
 
     res.status(200).send(price.toString());
   }
