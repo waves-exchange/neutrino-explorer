@@ -109,7 +109,7 @@ export class ExplorerApi {
     public async getAnnualYield():Promise<number>{
       const monetaryConstant = 6.85;
       const leasingShare = 0.9;
-      const nodePerfLagCoefficient = 0.5;
+      const nodePerfLagCoefficient = 0.98;
       const stakingShare = await this.getStaked()/await this.getTotalIssued();
 
       return <number>(nodePerfLagCoefficient*leasingShare*monetaryConstant/stakingShare);
