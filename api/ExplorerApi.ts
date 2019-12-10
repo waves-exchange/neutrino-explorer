@@ -112,6 +112,10 @@ export class ExplorerApi {
       return <number>(await this.getTotalIssued() - await this.getStaked());
     }
 
+    public async getCirculatingSupplyNoDec():Promise<number>{
+      return <number>((await this.getTotalIssued() - await this.getStaked()) * (10 ** await this.getDecimals()));
+    }
+
     public async getDeficit():Promise<number>{
       let neutrinoSupply = await this.getAssetQuantity() - await this.getNeutrinoBalance() + await this.getNeutrinoLockedBalance();
       // let reserve = wavesBalance(neutrinoContract) - wavesLockedBalance; //TODO

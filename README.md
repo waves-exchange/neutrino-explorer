@@ -17,6 +17,8 @@ Method ```get_circulating_supply``` (https://beta.neutrino.at/api/explorer/get_c
 
 Method ```get_decimals``` (https://beta.neutrino.at/api/explorer/get_decimals) returns USD-N decimals.
 
+Method ```get_circulating_supply_no_dec``` (https://beta.neutrino.at/api/explorer/get_circulating_supply_no_dec) returns Neutrinos circulating supply with no decimals.
+
 ## Example
 ### Getting current price
 

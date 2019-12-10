@@ -25,9 +25,9 @@ let explorerApiObject;
 // -------------------
 app.get('/api/get_current_price', async (req, res) => {
   try {
-    let price = await explorerApiObject.getPrice();
+    let result = await explorerApiObject.getPrice();
 
-    res.status(200).send(price.toString());
+    res.status(200).send(result.toString());
   }
   catch(error){
     console.log(error);
@@ -37,9 +37,9 @@ app.get('/api/get_current_price', async (req, res) => {
 
 app.get('/api/get_current_balance', async (req, res) => {
   try {
-    let balance = await explorerApiObject.getBalance();
+    let result = await explorerApiObject.getBalance();
 
-    res.status(200).send(balance.toString());
+    res.status(200).send(result.toString());
   }
   catch(error){
     console.log(error);
@@ -49,9 +49,9 @@ app.get('/api/get_current_balance', async (req, res) => {
 
 app.get('/api/get_total_issued', async (req, res) => {
   try {
-    let total_issued = await explorerApiObject.getTotalIssued();
+    let result = await explorerApiObject.getTotalIssued();
 
-    res.status(200).send(total_issued.toString());
+    res.status(200).send(result.toString());
   }
   catch(error){
     console.log(error);
@@ -61,9 +61,9 @@ app.get('/api/get_total_issued', async (req, res) => {
 
 app.get('/api/get_staked', async (req, res) => {
   try {
-    let staked = await explorerApiObject.getStaked();
+    let result = await explorerApiObject.getStaked();
 
-    res.status(200).send(staked.toString());
+    res.status(200).send(result.toString());
   }
   catch(error){
     console.log(error);
@@ -73,9 +73,9 @@ app.get('/api/get_staked', async (req, res) => {
 
 app.get('/api/get_annual_yield', async (req, res) => {
   try {
-    let annualYield = await explorerApiObject.getAnnualYield();
+    let result = await explorerApiObject.getAnnualYield();
 
-    res.status(200).send(annualYield.toString());
+    res.status(200).send(result.toString());
   }
   catch(error){
     console.log(error);
@@ -85,9 +85,9 @@ app.get('/api/get_annual_yield', async (req, res) => {
 
 app.get('/api/get_circulating_supply', async (req, res) => {
   try {
-    let circulatingSupply = await explorerApiObject.getCirculatingSupply();
+    let result = await explorerApiObject.getCirculatingSupply();
 
-    res.status(200).send(circulatingSupply.toString());
+    res.status(200).send(result.toString());
   }
   catch(error){
     console.log(error);
@@ -109,9 +109,21 @@ app.get('/api/get_circulating_supply', async (req, res) => {
 
 app.get('/api/get_decimals', async (req, res) => {
   try {
-    let decimals = await explorerApiObject.getDecimals();
+    let result = await explorerApiObject.getDecimals();
 
-    res.status(200).send(decimals.toString());
+    res.status(200).send(result.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.get('/api/get_circulating_supply_no_dec', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getCirculatingSupplyNoDec();
+
+    res.status(200).send(result.toString());
   }
   catch(error){
     console.log(error);
