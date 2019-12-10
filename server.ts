@@ -107,6 +107,18 @@ app.get('/api/get_circulating_supply', async (req, res) => {
 //   }
 // });
 
+app.get('/api/get_decimals', async (req, res) => {
+  try {
+    let decimals = await explorerApiObject.getDecimals();
+
+    res.status(200).send(decimals.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 
 
 //Listener

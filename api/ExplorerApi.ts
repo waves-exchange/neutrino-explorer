@@ -52,13 +52,6 @@ export class ExplorerApi {
     }
 
     //Helpers
-    private async getDecimals():Promise<number>{
-      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
-      const assetDecimals = assetObject.data.decimals;
-
-      return <number>(assetDecimals);
-    }
-
     private async getAssetQuantity(){
       const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
       const assetQuantity = assetObject.data.quantity;
@@ -127,6 +120,13 @@ export class ExplorerApi {
 
       return <number>(0);//TODO
 
+    }
+
+    public async getDecimals():Promise<number>{
+      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
+      const assetDecimals = assetObject.data.decimals;
+
+      return <number>(assetDecimals);
     }
 
 }
