@@ -1,7 +1,7 @@
 const express = require('express');
 
 let app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8001;
 
 const explorerApi = require('./api/ExplorerApi.ts');
 const neutrinoContractAddress = "3PC9BfRwJWWiw9AREE2B3eWzCks3CYtg4yo";

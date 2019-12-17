@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { nodeInteraction } from "@waves/waves-transactions";
-import { accountData, accountDataByKey } from "@waves/waves-transactions/dist/nodeInteraction";
+import { accountData, accountDataByKey, currentHeight } from "@waves/waves-transactions/dist/nodeInteraction";
 
 import { NeutrinoContractKeys } from "./contractKeys/NeutrinoContractKeys";
 import { ControlContractKeys } from "./contractKeys/ControlContractKeys";
@@ -59,8 +59,8 @@ export class ExplorerApi {
       return <number>(assetQuantity);
     }
 
-    private async getNeutrinoBalance(){
-      const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, this.neutrinoContractAddress, this.nodeUrl);
+    private async getNeutrinoBalance(contractAddress){
+      const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, contractAddress, this.nodeUrl);
       return <number>(assetBalance);
     }
 
@@ -75,10 +75,34 @@ export class ExplorerApi {
       return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value/100;
     }
 
+    private getSmartContractAddresses(){
+      console.log(this.neutrinoContractAddress,this.auctionContractAddress,this.controlContractAddress,this.liquidationContractAddress,this.rpdContractAddress);
+    }
 
     //Public API methods
-    public async getPrice():Promise<number> {
-        return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
+    public async getPrice():Promise<any> {
+      let key = "price_";
+      const startingHeight = 1713703;
+      let currentHeight = await nodeInteraction.currentHeight(this.nodeUrl);
+      let obj = {};
+
+      for (let i = startingHeight; i < currentHeight; i+=10) {
+        let price = await nodeInteraction.accountDataByKey(key+i,this.neutrinoContractAddress,this.nodeUrl);
+        try{
+          obj[i] = price.value;
+        } catch(e){
+          console.log("This block has no price set");
+        }
+
+        console.log(obj);
+      }
+
+      console.log(startingHeight);
+      console.log(currentHeight);
+      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
+    }
+
+    public async getAllPrice(){
     }
 
     public async getBalance():Promise<number> {
@@ -90,9 +114,13 @@ export class ExplorerApi {
       const assetQuantity = await this.getAssetQuantity();
       const assetDecimals = await this.getDecimals();
 
-      const assetBalance = await this.getNeutrinoBalance();
+      const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress)/(10**assetDecimals);
+      const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress)/(10**assetDecimals);
 
-      return <number>((assetQuantity - assetBalance)/(10**assetDecimals));
+      console.log(neutrinoBalance);
+      console.log(liquidationBalance);
+
+      return <number>(10**12-neutrinoBalance-liquidationBalance);
     }
 
     public async getStaked():Promise<number>{
@@ -117,7 +145,7 @@ export class ExplorerApi {
     }
 
     public async getDeficit():Promise<number>{
-      let neutrinoSupply = await this.getAssetQuantity() - await this.getNeutrinoBalance() + await this.getNeutrinoLockedBalance();
+      //let neutrinoSupply = await this.getAssetQuantity() - await this.getNeutrinoBalance() + await this.getNeutrinoLockedBalance();
       // let reserve = wavesBalance(neutrinoContract) - wavesLockedBalance; //TODO
       let price = await this.getPrice();
       // let deficit = neutrinoSupply - (reserve*price/100*PAULI/WAVELET); //TODO
