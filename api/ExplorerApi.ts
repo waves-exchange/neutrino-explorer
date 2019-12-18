@@ -92,8 +92,9 @@ export class ExplorerApi {
 
       const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress)/(10**assetDecimals);
       const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress)/(10**assetDecimals);
+      const balanceLockNeutrino = Number((await nodeInteraction.accountDataByKey("balance_lock_neutrino", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**assetDecimals);
 
-      return <number>(10**12-neutrinoBalance-liquidationBalance);
+      return <number>(10**12-neutrinoBalance-liquidationBalance+Number(balanceLockNeutrino));
     }
 
     public async getStaked():Promise<number>{
