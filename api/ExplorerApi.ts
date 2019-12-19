@@ -119,13 +119,26 @@ export class ExplorerApi {
     }
 
     public async getDeficit():Promise<number>{
-      //let neutrinoSupply = await this.getAssetQuantity() - await this.getNeutrinoBalance() + await this.getNeutrinoLockedBalance();
-      // let reserve = wavesBalance(neutrinoContract) - wavesLockedBalance; //TODO
-      let price = await this.getPrice();
-      // let deficit = neutrinoSupply - (reserve*price/100*PAULI/WAVELET); //TODO
+      // let neutrinoSupply = await this.getTotalIssued();
+      // let reserve = wavesBalance(neutrinoContract) - wavesLockedBalance;
+      // let price = await this.getPrice();
+      // let deficit = neutrinoSupply - (reserve*price);
+      //
+      // const = 10**12 - await this.getNeutrinoLockedBalance -
+      //  TotalSupply - LockedWaves*price + SwapLockedUSDN
+      //
+      // return <number>(0);
+      const assetDecimals = await this.getDecimals();
+      const totalIssued = await this.getTotalIssued();
 
-      return <number>(0);//TODO
 
+      const balanceLockWaves = Number((await nodeInteraction.accountDataByKey("balance_lock_waves", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**assetDecimals);
+      const reserve = await this.getBalance() - balanceLockWaves;
+      const price = await this.getPrice();
+
+      return<number>(totalIssued - reserve*price);
+
+      //TotalSupply - LockedWaves*price +  SwapLockedUSDN
     }
 
     public async getDecimals():Promise<number>{

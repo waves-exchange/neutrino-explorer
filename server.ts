@@ -95,17 +95,17 @@ app.get('/api/get_circulating_supply', async (req, res) => {
   }
 });
 
-// app.get('/api/get_deficit', async (req, res) => {
-//   try {
-//     let deficit = await explorerApiObject.getDeficit();
-//
-//     res.status(200).send(deficit.toString());
-//   }
-//   catch(error){
-//     console.log(error);
-//     res.sendStatus(500);
-//   }
-// });
+app.get('/api/get_deficit', async (req, res) => {
+  try {
+    let deficit = await explorerApiObject.getDeficit();
+
+    res.status(200).send(deficit.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
 
 app.get('/api/get_decimals', async (req, res) => {
   try {
