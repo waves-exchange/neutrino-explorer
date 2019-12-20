@@ -87,24 +87,24 @@ export class ExplorerApi {
       let currentHeight = await nodeInteraction.currentHeight(this.nodeUrl);
       let minHeight = Math.max(1751625, currentHeight-returnAmount);
 
-      let returnObject = {};
+      let returnArray = [];
 
-      for (let i = minHeight; i < currentHeight; i++) {
+      for (let i = currentHeight; i >= minHeight; i--) {
         let key = prefix+i;
         let priceObject = (await nodeInteraction.accountDataByKey(key,this.controlContractAddress,this.nodeUrl));
 
         try{
           let objKey = String(i);
           if (priceObject == null) {
-            returnObject[objKey] = null;
+            returnArray.push({[objKey]:null});
           } else {
-            returnObject[objKey] = priceObject.value;
+            returnArray.push({[objKey]:priceObject.value});
           }
         } catch(e){
           console.log(e);
         }
       }
-      return returnObject;
+      return returnArray;
     }
 
     //https://www.youtube.com/watch?v=HvUOI_ouBYM
