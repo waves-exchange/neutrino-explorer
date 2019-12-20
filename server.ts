@@ -131,6 +131,20 @@ app.get('/api/get_circulating_supply_no_dec', async (req, res) => {
   }
 });
 
+app.get('/api/get_price_blocks', async (req, res) => {
+  try {
+    let amount = req.query.amount;
+
+    let result = await explorerApiObject.getPriceBlocks(amount);
+
+    res.status(200).send(JSON.stringify(result));
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 
 
 //Listener

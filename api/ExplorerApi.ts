@@ -81,6 +81,34 @@ export class ExplorerApi {
       return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
     }
 
+    public async getPriceBlocks(returnAmount=10):Promise<any>{
+      let prefix = "price_";
+
+      let currentHeight = await nodeInteraction.currentHeight(this.nodeUrl);
+      let minHeight = Math.max(1751625, currentHeight-returnAmount);
+
+      let returnObject = {};
+
+      for (let i = minHeight; i < currentHeight; i++) {
+        let key = prefix+i;
+        let priceObject = (await nodeInteraction.accountDataByKey(key,this.controlContractAddress,this.nodeUrl));
+
+        try{
+          let objKey = String(i);
+          if (priceObject == null) {
+            returnObject[objKey] = null;
+          } else {
+            returnObject[objKey] = priceObject.value;
+          }
+        } catch(e){
+          console.log(e);
+        }
+      }
+      return returnObject;
+    }
+
+    //https://www.youtube.com/watch?v=HvUOI_ouBYM
+
     public async getBalance():Promise<number> {
       return <number>(await nodeInteraction.balance(this.neutrinoContractAddress, this.nodeUrl)/ExplorerApi.WAVELET);
     }
