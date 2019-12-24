@@ -77,15 +77,17 @@ export class ExplorerApi {
       return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
     }
 
-    public async getPriceBlocks(returnAmount=10):Promise<any>{
+    public async getPriceBlocks(start, end):Promise<any>{
+
+      let startBlock = start;
+      let endBlock = end;
       let prefix = "price_";
 
-      let currentHeight = await nodeInteraction.currentHeight(this.nodeUrl);
-      let minHeight = Math.max(1751625, currentHeight-returnAmount);
+      // let currentHeight = await nodeInteraction.currentHeight(this.nodeUrl);
 
       let returnArray = [];
 
-      for (let i = currentHeight; i >= minHeight; i--) {
+      for (let i = startBlock; i <= endBlock; i++) {
         let key = prefix+i;
         let priceObject = (await nodeInteraction.accountDataByKey(key,this.controlContractAddress,this.nodeUrl));
 

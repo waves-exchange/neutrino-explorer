@@ -133,9 +133,12 @@ app.get('/api/get_circulating_supply_no_dec', async (req, res) => {
 
 app.get('/api/get_price_blocks', async (req, res) => {
   try {
-    let amount = req.query.amount;
+    let start = req.query.start;
+    let end = req.query.end;
 
-    let result = await explorerApiObject.getPriceBlocks(amount);
+    let result = await explorerApiObject.getPriceBlocks(start,end);
+
+    res.setHeader('Content-Type', 'application/json');
 
     res.status(200).send(JSON.stringify(result));
   }
