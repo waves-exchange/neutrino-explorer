@@ -64,10 +64,6 @@ export class ExplorerApi {
       return <number>(assetBalance);
     }
 
-    // private async getAccountDataByKey(key, contractAddress):Promise<number>{
-    //       return <number>(await nodeInteraction.accountDataByKey(key, controlContract, this.nodeUrl)).value/100;
-    // }
-    //
     private async getNeutrinoLockedBalance():Promise<number>{
       return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value/100;
     }
@@ -107,8 +103,6 @@ export class ExplorerApi {
       return returnArray;
     }
 
-    //https://www.youtube.com/watch?v=HvUOI_ouBYM
-
     public async getBalance():Promise<number> {
       return <number>(await nodeInteraction.balance(this.neutrinoContractAddress, this.nodeUrl)/ExplorerApi.WAVELET);
     }
@@ -147,15 +141,6 @@ export class ExplorerApi {
     }
 
     public async getDeficit():Promise<number>{
-      // let neutrinoSupply = await this.getTotalIssued();
-      // let reserve = wavesBalance(neutrinoContract) - wavesLockedBalance;
-      // let price = await this.getPrice();
-      // let deficit = neutrinoSupply - (reserve*price);
-      //
-      // const = 10**12 - await this.getNeutrinoLockedBalance -
-      //  TotalSupply - LockedWaves*price + SwapLockedUSDN
-      //
-      // return <number>(0);
       const assetDecimals = await this.getDecimals();
       const totalIssued = await this.getTotalIssued();
 
@@ -165,8 +150,6 @@ export class ExplorerApi {
       const price = await this.getPrice();
 
       return<number>(totalIssued - reserve*price);
-
-      //TotalSupply - LockedWaves*price +  SwapLockedUSDN
     }
 
     public async getDecimals():Promise<number>{
