@@ -19,6 +19,10 @@ Method ```get_decimals``` (https://beta.neutrino.at/api/explorer/get_decimals) r
 
 Method ```get_circulating_supply_no_dec``` (https://beta.neutrino.at/api/explorer/get_circulating_supply_no_dec) returns Neutrinos circulating supply with no decimals.
 
+Method ```get_deficit``` (https://beta.neutrino.at/api/explorer/get_deficit) returns deficit (when positive) and surplus (when negative) on the Neutrino smart contract.
+
+Method ```get_price_blocks?start=<block_height>&end=<block_height>``` (https://beta.neutrino.at/api/explorer/get_price_blocks?start=1853530&end=1853556) returns JSON that shows blocks where the price was finalized.
+
 ## Example
 ### Getting current price
 
