@@ -83,8 +83,6 @@ export class ExplorerApi {
       let endBlock = end;
       let prefix = "price_";
 
-      // let currentHeight = await nodeInteraction.currentHeight(this.nodeUrl);
-
       let returnArray = [];
 
       for (let i = startBlock; i <= endBlock; i++) {
@@ -110,7 +108,7 @@ export class ExplorerApi {
     }
 
     public async getTotalIssued():Promise<number>{
-      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
+
       const assetQuantity = await this.getAssetQuantity();
       const assetDecimals = await this.getDecimals();
 
