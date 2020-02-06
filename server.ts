@@ -148,6 +148,18 @@ app.get('/api/get_price_blocks', async (req, res) => {
   }
 });
 
+app.get('/api/get_locked_for_swap', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getLockedForSwap();
+
+    res.status(200).send(result.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 
 
 //Listener

@@ -159,4 +159,11 @@ export class ExplorerApi {
       return <number>(assetDecimals);
     }
 
+    public async getLockedForSwap():Promise<number>{
+      let lockedForSwapPauli = await axios.get(this.nodeUrl+'addresses/data/'+this.neutrinoContractAddress+'/'+'balance_lock_neutrino');
+
+      let lockedForSwap = lockedForSwapPauli.data.value/1000000;
+      return <number>(lockedForSwap)
+    }
+
 }

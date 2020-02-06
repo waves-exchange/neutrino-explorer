@@ -23,6 +23,8 @@ Method ```get_deficit``` (https://beta.neutrino.at/api/explorer/get_deficit) ret
 
 Method ```get_price_blocks?start=<block_height>&end=<block_height>``` (https://beta.neutrino.at/api/explorer/get_price_blocks?start=1853530&end=1853556) returns JSON that shows blocks where the price was finalized.
 
+Method ```get_locked_for_swap``` (https://beta.neutrino.at/api/explorer/get_locked_for_swap) returns USDNs locked on the Neutrino smart contract.
+
 ## Example
 ### Getting current price
 
