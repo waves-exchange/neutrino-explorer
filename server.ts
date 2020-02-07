@@ -160,7 +160,65 @@ app.get('/api/get_locked_for_swap', async (req, res) => {
   }
 });
 
+app.get('/api/get_deficit_per_cent', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getDeficitPerCent();
 
+    res.status(200).send(result.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.get('/api/get_total_bonds_rest', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getTotalBondsRest();
+
+    res.status(200).send(result.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.get('/api/get_total_liquidation', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getTotalLiquidation();
+
+    res.status(200).send(result.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// app.get('/api/get_issue_bond_price', async (req, res) => {
+//   try {
+//     let result = await explorerApiObject.getIssueBondPrice();
+//
+//     res.status(200).send(result.toString());
+//   }
+//   catch(error){
+//     console.log(error);
+//     res.sendStatus(500);
+//   }
+// });
+//
+// app.get('/api/get_liquidate_bond_price', async (req, res) => {
+//   try {
+//     let result = await explorerApiObject.getLiquidateBondPrice();
+//
+//     res.status(200).send(result.toString());
+//   }
+//   catch(error){
+//     console.log(error);
+//     res.sendStatus(500);
+//   }
+// });
 
 //Listener
 let server = app.listen(port, function () {

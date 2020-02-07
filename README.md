@@ -25,6 +25,13 @@ Method ```get_price_blocks?start=<block_height>&end=<block_height>``` (https://b
 
 Method ```get_locked_for_swap``` (https://beta.neutrino.at/api/explorer/get_locked_for_swap) returns USDNs locked on the Neutrino smart contract.
 
+Method ```get_deficit_per_cent``` (https://beta.neutrino.at/api/explorer/get_deficit_per_cent) returns deficit in percent.
+
+Method ```get_total_bonds_rest``` (https://beta.neutrino.at/api/explorer/get_total_bonds_rest) returns bonds left to be bought.
+
+Method ```get_total_liquidation``` (https://beta.neutrino.at/api/explorer/get_total_liquidation) returns bonds left to be liquidated.
+
+
 ## Example
 ### Getting current price
 

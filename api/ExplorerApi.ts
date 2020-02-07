@@ -161,9 +161,58 @@ export class ExplorerApi {
 
     public async getLockedForSwap():Promise<number>{
       let lockedForSwapPauli = await axios.get(this.nodeUrl+'addresses/data/'+this.neutrinoContractAddress+'/'+'balance_lock_neutrino');
-
       let lockedForSwap = lockedForSwapPauli.data.value/1000000;
-      return <number>(lockedForSwap)
+      return <number>(lockedForSwap);
     }
+
+    public async getDeficitPerCent():Promise<number>{
+      return <number>(-1*(await this.getDeficit()/await this.getTotalIssued()))*100;
+    }
+
+    public async getTotalBondsRest():Promise<number>{
+      let orders_object = await axios.get('https://beta.neutrino.at/api/v1/bonds/usd-nb_usd-n/orders');
+      let orders_object_data = orders_object.data;
+
+      let restAmount = 0;
+      for (let j of orders_object_data){
+        let delta = j.restAmount;
+        restAmount += delta;
+      }
+
+      return <number>(restAmount);
+    }
+
+    public async getTotalLiquidation():Promise<number>{
+      let orders_object = await axios.get('https://beta.neutrino.at/api/v1/liquidate/usd-nb_usd-n/orders');
+      let orders_object_data = orders_object.data;
+
+      let restAmount = 0;
+      for (let j of orders_object_data){
+        let delta = j.restTotal;
+        restAmount += delta;
+      }
+      console.log(restAmount)
+      return <number>(restAmount);
+    }
+
+    // public async getLiquidateBondPrice():Promise<number>{
+    //
+    //   const assetDecimals = await this.getDecimals();
+    //   const totalIssued = await this.getTotalIssued();
+    //
+    //   const balanceLockWaves = Number((await nodeInteraction.accountDataByKey("balance_lock_waves", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**assetDecimals);
+    //   const reserve = await this.getBalance() - balanceLockWaves;
+    //
+    //   let price = await this.getPrice();
+    //
+    //
+    //   while(!(totalIssued > reserve*price)){
+    //     price += 0.01
+    //     price = price.toFixed(2);
+    //   }
+    //   price += 0.01
+    //
+    //   return <number>(price.toFixed(2));
+    // }
 
 }
