@@ -30,7 +30,7 @@ export class ExplorerApi {
 
 
         const neutrinoAssetId = <string>accountDataState[NeutrinoContractKeys.NeutrinoAssetIdKey].value
-        const bondAssetId = "6nSpVyNH7yM69eg446wrQR94ipbbcmZMU1ENPwanC97g"
+        const bondAssetId = <string>accountDataState[NeutrinoContractKeys.BondAssetIdKey].value
 
 
         const stakedBalanceKey = <string>accountDataState[RpdContractKeys.BalanceKey].value
