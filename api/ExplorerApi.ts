@@ -147,9 +147,6 @@ export class ExplorerApi {
       let annualYield = 365.5*(sumRewards/averageDays)/10**6
       return <number>annualYield;
 
-      //YY(d) = 100%*(reward(d)/100)*365.5
-      //YY = average(YY(d))
-
     }
 
     public async getCirculatingSupply():Promise<number>{

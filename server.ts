@@ -208,29 +208,6 @@ app.get('/api/get_total_liquidation', async (req, res) => {
   }
 });
 
-// app.get('/api/get_issue_bond_price', async (req, res) => {
-//   try {
-//     let result = await explorerApiObject.getIssueBondPrice();
-//
-//     res.status(200).send(result.toString());
-//   }
-//   catch(error){
-//     console.log(error);
-//     res.sendStatus(500);
-//   }
-// });
-//
-// app.get('/api/get_liquidate_bond_price', async (req, res) => {
-//   try {
-//     let result = await explorerApiObject.getLiquidateBondPrice();
-//
-//     res.status(200).send(result.toString());
-//   }
-//   catch(error){
-//     console.log(error);
-//     res.sendStatus(500);
-//   }
-// });
 
 //Listener
 let server = app.listen(port, function () {
