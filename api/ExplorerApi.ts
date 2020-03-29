@@ -123,13 +123,33 @@ export class ExplorerApi {
       return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/10**await this.getDecimals();
     }
 
-    public async getAnnualYield():Promise<number>{
+    public async getAnnualYieldAnalytical():Promise<number>{
       const monetaryConstant = 6.85;
       const leasingShare = 0.9;
-      const nodePerfLagCoefficient = 0.98;
+      const nodePerfLagCoefficient = 0.99;
       const stakingShare = await this.getStaked()/await this.getTotalIssued();
+      const deficitPerCent = await this.getDeficitPerCent();
+      let deficitCoefficient = 1+(deficitPerCent*0.01);
 
-      return <number>(nodePerfLagCoefficient*leasingShare*monetaryConstant/stakingShare);
+      return <number>(deficitCoefficient*nodePerfLagCoefficient*leasingShare*monetaryConstant/stakingShare);
+    }
+
+    public async getAnnualYield():Promise<number>{
+      let averageDays = 14;
+      const stakingAddress = "3P5X7AFNSTjcVoYLXkgRNTqmp51QcWAVESX";
+      const txObject = await axios.get(this.nodeUrl+'transactions/address/'+stakingAddress+'/limit/99');
+      const txData = txObject.data[0];
+
+      const filteredTxData = txData.filter(item => String(item.sender) === String('3PLosK1gb6GpN5vV7ZyiCdwRWizpy2H31KR')).slice(0,averageDays);
+
+      let allRewards = filteredTxData.map(item => item.transfers[0].amount);
+      let sumRewards = allRewards.reduce((a,b) => a + b, 0);
+      let annualYield = 365.5*(sumRewards/averageDays)/10**6
+      return <number>annualYield;
+
+      //YY(d) = 100%*(reward(d)/100)*365.5
+      //YY = average(YY(d))
+
     }
 
     public async getCirculatingSupply():Promise<number>{

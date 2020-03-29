@@ -83,6 +83,18 @@ app.get('/api/get_annual_yield', async (req, res) => {
   }
 });
 
+app.get('/api/get_annual_yield_analytical', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getAnnualYieldAnalytical();
+
+    res.status(200).send(result.toString());
+  }
+  catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 app.get('/api/get_circulating_supply', async (req, res) => {
   try {
     let result = await explorerApiObject.getCirculatingSupply();
