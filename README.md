@@ -43,3 +43,6 @@ GET /api/get_current_price
 ```
 0.59
 ```
+
+## Deployment
+Simply run ```deploy.sh``` as root to build and launch the Docker container.
