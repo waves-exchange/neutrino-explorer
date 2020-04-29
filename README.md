@@ -11,7 +11,12 @@ Method ```get_total_issued``` (https://beta.neutrino.at/api/explorer/get_total_i
 
 Method ```get_staked``` (https://beta.neutrino.at/api/explorer/get_staked) returns total Neutrinos in staking.
 
-Method ```get_annual_yield``` (https://beta.neutrino.at/api/explorer/get_annual_yield) returns expected annual staking ROI.
+Method ```get_annual_yield``` (https://beta.neutrino.at/api/explorer/get_annual_yield) returns expected annual staking ROI based on averaging 14 recent rewards.
+
+Method ```get_annual_yield_analytical``` (https://beta.neutrino.at/api/explorer/get_annual_yield_analytical) returns expected annual staking ROI calculated as an analytical approximation based on the formula below:
+```
+1+deficit*node_performance_lag_*leasing_share*monetary_constant/staking_share
+```
 
 Method ```get_circulating_supply``` (https://beta.neutrino.at/api/explorer/get_circulating_supply) returns Neutrinos circulating supply.
 
@@ -46,3 +51,4 @@ GET /api/get_current_price
 
 ## Deployment
 Simply run ```deploy.sh``` as root to build and launch the Docker container.
+Configuration (*neutrino contract address* and *node url*) is declared in *server.ts*.
