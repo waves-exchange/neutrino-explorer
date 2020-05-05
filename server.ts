@@ -4,8 +4,9 @@ let app = express();
 const port = process.env.PORT || 8001;
 
 const explorerApi = require('./api/ExplorerApi.ts');
-const neutrinoContractAddress = "3PC9BfRwJWWiw9AREE2B3eWzCks3CYtg4yo";
-const nodeUrl = "https://nodes.neutrino.at/";
+// const neutrinoContractAddress = "3PC9BfRwJWWiw9AREE2B3eWzCks3CYtg4yo";
+const nodeUrl = process.env.DAPP_ADDRESS;
+const nodeUrl = process.env.NODE_URL;
 
 // Helper Functions
 async function connectExplorerApi(nodeUrl, neutrinoContractAddress){
