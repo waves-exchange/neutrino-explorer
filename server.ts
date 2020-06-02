@@ -16,6 +16,8 @@ let explorerApiObject;
   );
 })();
 
+// console.log(explorerApiObject);
+
 // -------------------
 app.get('/api/get_current_price', async (req, res) => {
   try {
