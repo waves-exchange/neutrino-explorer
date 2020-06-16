@@ -11,6 +11,8 @@ import { OrderKeys } from "./contractKeys/OrderKeys";
 
 export class ExplorerApi {
     static readonly WAVELET: number = (10 ** 8);
+    readonly NEUTRINO_DEC: number = 1e6
+
     neutrinoContractAddress: string;
     auctionContractAddress: string;
     controlContractAddress: string;
@@ -64,7 +66,7 @@ export class ExplorerApi {
     }
 
     private async getNeutrinoLockedBalance():Promise<number>{
-      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value/100;
+      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value;
     }
 
     private getSmartContractAddresses(){
@@ -73,7 +75,7 @@ export class ExplorerApi {
 
     //Public API methods
     public async getPrice():Promise<any> {
-      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
+      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/this.NEUTRINO_DEC;
     }
 
     public async getPriceBlocks(start, end):Promise<any>{
@@ -160,7 +162,6 @@ export class ExplorerApi {
       const assetDecimals = await this.getDecimals();
       const totalIssued = await this.getTotalIssued();
 
-
       const balanceLockWaves = Number((await nodeInteraction.accountDataByKey("balance_lock_waves", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**assetDecimals);
       const reserve = await this.getBalance() - balanceLockWaves;
       const price = await this.getPrice();
@@ -210,25 +211,4 @@ export class ExplorerApi {
       console.log(restAmount)
       return <number>(restAmount);
     }
-
-    // public async getLiquidateBondPrice():Promise<number>{
-    //
-    //   const assetDecimals = await this.getDecimals();
-    //   const totalIssued = await this.getTotalIssued();
-    //
-    //   const balanceLockWaves = Number((await nodeInteraction.accountDataByKey("balance_lock_waves", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**assetDecimals);
-    //   const reserve = await this.getBalance() - balanceLockWaves;
-    //
-    //   let price = await this.getPrice();
-    //
-    //
-    //   while(!(totalIssued > reserve*price)){
-    //     price += 0.01
-    //     price = price.toFixed(2);
-    //   }
-    //   price += 0.01
-    //
-    //   return <number>(price.toFixed(2));
-    // }
-
 }
