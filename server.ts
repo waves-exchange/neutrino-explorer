@@ -4,10 +4,10 @@ let app = express();
 const port = process.env.PORT || 8001;
 
 const explorerApi = require('./api/ExplorerApi.ts');
-// const neutrinoContractAddress = "3PC9BfRwJWWiw9AREE2B3eWzCks3CYtg4yo";
-const neutrinoContractAddress = "3MxUeE9rS9G3ap3kSrw67vkjYyTL3QLJnk3";
-// const nodeUrl = "https://nodes.wavesplatform.com/";
-const nodeUrl = "http://testnode1.wavesnodes.com/";
+const neutrinoContractAddress = "3PC9BfRwJWWiw9AREE2B3eWzCks3CYtg4yo";
+// const neutrinoContractAddress = "3MxUeE9rS9G3ap3kSrw67vkjYyTL3QLJnk3";
+const nodeUrl = "https://nodes.wavesplatform.com/";
+// const nodeUrl = "http://testnode1.wavesnodes.com/";
 
 // Helper Functions
 async function connectExplorerApi(nodeUrl, neutrinoContractAddress){
