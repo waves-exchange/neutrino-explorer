@@ -4,26 +4,9 @@ let app = express();
 const port = process.env.PORT || 8001;
 
 const explorerApi = require('./api/ExplorerApi.ts');
-<<<<<<< HEAD
-const neutrinoContractAddress = "3PC9BfRwJWWiw9AREE2B3eWzCks3CYtg4yo";
-// const neutrinoContractAddress = "3MxUeE9rS9G3ap3kSrw67vkjYyTL3QLJnk3";
-const nodeUrl = "https://nodes.wavesplatform.com/";
-// const nodeUrl = "http://testnode1.wavesnodes.com/";
-
-// Helper Functions
-async function connectExplorerApi(nodeUrl, neutrinoContractAddress){
-  try {
-    return await explorerApi.ExplorerApi.create(nodeUrl, neutrinoContractAddress);
-  } catch(error){
-    console.log(error)
-    process.exit(1)
-  }
-}
-=======
 
 const neutrinoContractAddress = process.env.CONTRACT_ADDRESS;
 const nodeUrl = process.env.NODE_URL;
->>>>>>> master
 
 let explorerApiObject;
 (async function () {
