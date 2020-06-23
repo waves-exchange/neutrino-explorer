@@ -34,9 +34,6 @@ export class ExplorerApi {
         const neutrinoAssetId = <string>accountDataState[NeutrinoContractKeys.NeutrinoAssetIdKey].value
         const bondAssetId = <string>accountDataState[NeutrinoContractKeys.BondAssetIdKey].value
 
-        // const stakedBalanceKey = <string>accountDataState[RpdContractKeys.BalanceKey].value
-        // const neutrinoLockedBalanceKey = <string>accountDataState[AuctionContractKeys.WavesLockedBalanceKey].value
-
         return new ExplorerApi(nodeUrl, neutrinoContractAddress, auctionContractAddress, controlContractAddress, liquidationContractAddress, rpdContractAddress, neutrinoAssetId, bondAssetId)
     }
 
