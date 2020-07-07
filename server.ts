@@ -13,9 +13,8 @@ let explorerApiObject;
     nodeUrl,
     neutrinoContractAddress
   );
+  console.log('Explorer API object ready!');
 })();
-
-// console.log(explorerApiObject);
 
 // -------------------
 app.get('/api/get_current_price', async (req, res) => {
@@ -158,12 +157,7 @@ app.get('/api/get_locked_for_swap', async (req, res) => {
 
 app.get('/api/get_deficit_per_cent', async (req, res) => {
   try {
-    console.time('Request Time');
-    let result = await explorerApiObject.getDeficitPerCent();
-    console.timeEnd('Request Time');
-    if (result === null) {
-      debugger;
-    }
+    const result = await explorerApiObject.getDeficitPerCent();
 
     res.status(200).send(result.toString());
   } catch (error) {

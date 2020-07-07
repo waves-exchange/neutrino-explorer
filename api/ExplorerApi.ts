@@ -41,22 +41,17 @@ export class ExplorerApi {
             const bondAssetId = <string>map[NeutrinoContractKeys.BondAssetIdKey].value;
 
             return axios.get<{ decimals: number }>(`${nodeUrl}assets/details/${neutrinoAssetId}`)
-                .then((detailsResponse) => {
-
-                    debugger;
-
-                    return new ExplorerApi({
-                        nodeUrl,
-                        neutrinoContractAddress,
-                        auctionContractAddress,
-                        controlContractAddress,
-                        liquidationContractAddress,
-                        rpdContractAddress,
-                        neutrinoAssetId,
-                        bondAssetId,
-                        assetDecimals: detailsResponse.data.decimals
-                    });
-                });
+                .then((detailsResponse) => new ExplorerApi({
+                    nodeUrl,
+                    neutrinoContractAddress,
+                    auctionContractAddress,
+                    controlContractAddress,
+                    liquidationContractAddress,
+                    rpdContractAddress,
+                    neutrinoAssetId,
+                    bondAssetId,
+                    assetDecimals: detailsResponse.data.decimals
+                }));
         });
     }
 
