@@ -97,7 +97,8 @@ app.get('/api/get_circulating_supply', async (req, res) => {
 
 app.get('/api/get_deficit', async (req, res) => {
   try {
-    let deficit = await explorerApiObject.getDeficit();
+    const totalIssued = await explorerApiObject.getTotalIssued();
+    let deficit = await explorerApiObject.getDeficit(totalIssued);
 
     res.status(200).send(deficit.toString());
   } catch (error) {
