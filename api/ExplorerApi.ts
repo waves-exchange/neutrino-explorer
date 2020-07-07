@@ -1,12 +1,11 @@
 import axios from 'axios';
-import { nodeInteraction } from "@waves/waves-transactions";
-import { accountData, accountDataByKey, currentHeight } from "@waves/waves-transactions/dist/nodeInteraction";
+import { nodeInteraction } from '@waves/waves-transactions';
+import { indexBy, prop } from 'ramda';
 
-import { NeutrinoContractKeys } from "./contractKeys/NeutrinoContractKeys";
-import { ControlContractKeys } from "./contractKeys/ControlContractKeys";
-import { RpdContractKeys } from "./contractKeys/RpdContractKeys";
-import { AuctionContractKeys } from "./contractKeys/AuctionContractKeys";
-import { OrderKeys } from "./contractKeys/OrderKeys";
+import { NeutrinoContractKeys } from './contractKeys/NeutrinoContractKeys';
+import { ControlContractKeys } from './contractKeys/ControlContractKeys';
+import { RpdContractKeys } from './contractKeys/RpdContractKeys';
+import { AuctionContractKeys } from './contractKeys/AuctionContractKeys';
 
 
 export class ExplorerApi {
@@ -19,23 +18,59 @@ export class ExplorerApi {
     neutrinoAssetId: string;
     bondAssetId: string;
     liquidationContractAddress: string;
+    assetDecimals: number;
 
-    public static async create(nodeUrl: string, neutrinoContractAddress: string){
-        const accountDataState = await nodeInteraction.accountData(neutrinoContractAddress, nodeUrl);
+    public static create(nodeUrl: string, neutrinoContractAddress: string): Promise<ExplorerApi> {
+        return axios.post(`${nodeUrl}addresses/data/${neutrinoContractAddress}`, {
+            keys: [
+                NeutrinoContractKeys.AuctionContractAddressKey,
+                NeutrinoContractKeys.ControlContractAddressKey,
+                NeutrinoContractKeys.LiquidationContractAddressKey,
+                NeutrinoContractKeys.RpdContractAddressKey,
+                NeutrinoContractKeys.NeutrinoAssetIdKey,
+                NeutrinoContractKeys.BondAssetIdKey,
+            ]
+        }).then((response) => {
+            const map: Record<string, { key: string, value: any }> = indexBy(prop('key'), response.data);
 
-        const auctionContractAddress = <string>accountDataState[NeutrinoContractKeys.AuctionContractAddressKey].value
-        const controlContractAddress = <string>accountDataState[NeutrinoContractKeys.ControlContractAddressKey].value
-        const liquidationContractAddress = <string>accountDataState[NeutrinoContractKeys.LiquidationContractAddressKey].value
-        const rpdContractAddress = <string>accountDataState[NeutrinoContractKeys.RpdContractAddressKey].value
+            const auctionContractAddress = <string>map[NeutrinoContractKeys.AuctionContractAddressKey].value;
+            const controlContractAddress = <string>map[NeutrinoContractKeys.ControlContractAddressKey].value;
+            const liquidationContractAddress = <string>map[NeutrinoContractKeys.LiquidationContractAddressKey].value;
+            const rpdContractAddress = <string>map[NeutrinoContractKeys.RpdContractAddressKey].value;
+            const neutrinoAssetId = <string>map[NeutrinoContractKeys.NeutrinoAssetIdKey].value;
+            const bondAssetId = <string>map[NeutrinoContractKeys.BondAssetIdKey].value;
 
+            return axios.get<{ decimals: number }>(`${nodeUrl}assets/details/${neutrinoAssetId}`)
+                .then((detailsResponse) => {
 
-        const neutrinoAssetId = <string>accountDataState[NeutrinoContractKeys.NeutrinoAssetIdKey].value
-        const bondAssetId = <string>accountDataState[NeutrinoContractKeys.BondAssetIdKey].value
+                    debugger;
 
-        return new ExplorerApi(nodeUrl, neutrinoContractAddress, auctionContractAddress, controlContractAddress, liquidationContractAddress, rpdContractAddress, neutrinoAssetId, bondAssetId)
+                    return new ExplorerApi({
+                        nodeUrl,
+                        neutrinoContractAddress,
+                        auctionContractAddress,
+                        controlContractAddress,
+                        liquidationContractAddress,
+                        rpdContractAddress,
+                        neutrinoAssetId,
+                        bondAssetId,
+                        assetDecimals: detailsResponse.data.decimals
+                    });
+                });
+        });
     }
 
-    public constructor(nodeUrl: string, neutrinoContractAddress: string, auctionContractAddress: string, controlContractAddress: string, liquidationContractAddress: string, rpdContractAddress: string, neutrinoAssetId: string, bondAssetId: string){
+    private constructor({
+                            nodeUrl,
+                            neutrinoContractAddress,
+                            auctionContractAddress,
+                            controlContractAddress,
+                            liquidationContractAddress,
+                            rpdContractAddress,
+                            neutrinoAssetId,
+                            bondAssetId,
+                            assetDecimals
+    }: ExplorerApiOption){
         this.neutrinoContractAddress = neutrinoContractAddress;
         this.auctionContractAddress = auctionContractAddress;
         this.controlContractAddress = controlContractAddress;
@@ -45,6 +80,7 @@ export class ExplorerApi {
         this.neutrinoAssetId = neutrinoAssetId;
         this.bondAssetId = bondAssetId;
         this.nodeUrl = nodeUrl;
+        this.assetDecimals = assetDecimals;
     }
 
     //Helpers
@@ -104,19 +140,15 @@ export class ExplorerApi {
     }
 
     public async getTotalIssued():Promise<number>{
-
-      const assetQuantity = await this.getAssetQuantity();
-      const assetDecimals = await this.getDecimals();
-
-      const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress)/(10**assetDecimals);
-      const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress)/(10**assetDecimals);
-      const balanceLockNeutrino = Number((await nodeInteraction.accountDataByKey("balance_lock_neutrino", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**assetDecimals);
+      const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress)/(10**this.assetDecimals);
+      const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress)/(10**this.assetDecimals);
+      const balanceLockNeutrino = Number((await nodeInteraction.accountDataByKey("balance_lock_neutrino", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**this.assetDecimals);
 
       return <number>(10**12-neutrinoBalance-liquidationBalance+Number(balanceLockNeutrino));
     }
 
     public async getStaked():Promise<number>{
-      return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/10**await this.getDecimals();
+      return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/10**this.assetDecimals;
     }
 
     public async getAnnualYieldAnalytical():Promise<number>{
@@ -150,26 +182,18 @@ export class ExplorerApi {
     }
 
     public async getCirculatingSupplyNoDec():Promise<number>{
-      return <number>((await this.getTotalIssued() - await this.getStaked()) * (10 ** await this.getDecimals()));
+      return <number>((await this.getTotalIssued() - await this.getStaked()) * (10 ** this.assetDecimals));
     }
 
     public async getDeficit():Promise<number>{
-      const assetDecimals = await this.getDecimals();
       const totalIssued = await this.getTotalIssued();
 
 
-      const balanceLockWaves = Number((await nodeInteraction.accountDataByKey("balance_lock_waves", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**assetDecimals);
+      const balanceLockWaves = Number((await nodeInteraction.accountDataByKey("balance_lock_waves", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**this.assetDecimals);
       const reserve = await this.getBalance() - balanceLockWaves;
       const price = await this.getPrice();
 
       return<number>(totalIssued - reserve*price);
-    }
-
-    public async getDecimals():Promise<number>{
-      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
-      const assetDecimals = assetObject.data.decimals;
-
-      return <number>(assetDecimals);
     }
 
     public async getLockedForSwap():Promise<number>{
@@ -229,3 +253,15 @@ export class ExplorerApi {
     // }
 
 }
+
+type ExplorerApiOption = {
+    nodeUrl: string;
+    neutrinoContractAddress: string;
+    auctionContractAddress: string;
+    controlContractAddress: string;
+    liquidationContractAddress: string;
+    rpdContractAddress: string;
+    neutrinoAssetId: string;
+    bondAssetId: string;
+    assetDecimals: number;
+} ;

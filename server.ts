@@ -1,9 +1,8 @@
 const express = require('express');
-
 let app = express();
 const port = process.env.PORT || 8001;
 
-const explorerApi = require('./api/ExplorerApi.ts');
+const explorerApi = require('./api/ExplorerApi');
 
 const neutrinoContractAddress = process.env.CONTRACT_ADDRESS;
 const nodeUrl = process.env.NODE_URL;
@@ -158,7 +157,12 @@ app.get('/api/get_locked_for_swap', async (req, res) => {
 
 app.get('/api/get_deficit_per_cent', async (req, res) => {
   try {
+    console.time('Request Time');
     let result = await explorerApiObject.getDeficitPerCent();
+    console.timeEnd('Request Time');
+    if (result === null) {
+      debugger;
+    }
 
     res.status(200).send(result.toString());
   } catch (error) {
