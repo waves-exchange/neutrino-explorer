@@ -1,9 +1,8 @@
 const express = require('express');
-
 let app = express();
 const port = process.env.PORT || 8001;
 
-const explorerApi = require('./api/ExplorerApi.ts');
+const explorerApi = require('./api/ExplorerApi');
 
 const neutrinoContractAddress = process.env.CONTRACT_ADDRESS;
 const nodeUrl = process.env.NODE_URL;
@@ -14,9 +13,8 @@ let explorerApiObject;
     nodeUrl,
     neutrinoContractAddress
   );
+  console.log('Explorer API object ready!');
 })();
-
-// console.log(explorerApiObject);
 
 // -------------------
 app.get('/api/get_current_price', async (req, res) => {
@@ -98,7 +96,8 @@ app.get('/api/get_circulating_supply', async (req, res) => {
 
 app.get('/api/get_deficit', async (req, res) => {
   try {
-    let deficit = await explorerApiObject.getDeficit();
+    const totalIssued = await explorerApiObject.getTotalIssued();
+    let deficit = await explorerApiObject.getDeficit(totalIssued);
 
     res.status(200).send(deficit.toString());
   } catch (error) {
@@ -158,7 +157,7 @@ app.get('/api/get_locked_for_swap', async (req, res) => {
 
 app.get('/api/get_deficit_per_cent', async (req, res) => {
   try {
-    let result = await explorerApiObject.getDeficitPerCent();
+    const result = await explorerApiObject.getDeficitPerCent();
 
     res.status(200).send(result.toString());
   } catch (error) {
