@@ -101,7 +101,7 @@ export class ExplorerApi {
 
     //Public API methods
     public async getPrice():Promise<any> {
-      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/100;
+      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/(10 ** 6);
     }
 
     public async getPriceBlocks(start, end):Promise<any>{
