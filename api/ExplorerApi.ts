@@ -163,7 +163,7 @@ export class ExplorerApi {
       const txObject = await axios.get(this.nodeUrl+'transactions/address/'+stakingAddress+'/limit/99');
       const txData = txObject.data[0];
 
-      const filteredTxData = txData.filter(item => String(item.sender) === String('3PLosK1gb6GpN5vV7ZyiCdwRWizpy2H31KR')).slice(0,averageDays);
+      const filteredTxData = txData.filter(item => String(item.sender) === String('3PMj3yGPBEa1Sx9X4TSBFeJCMMaE3wvKR4N')).slice(0,averageDays);
 
       let allRewards = filteredTxData.map(item => item.transfers[0].amount);
       let sumRewards = allRewards.reduce((a,b) => a + b, 0);
