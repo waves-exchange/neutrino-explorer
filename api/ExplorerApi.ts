@@ -133,6 +133,10 @@ export class ExplorerApi {
       return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/(10 ** this.assetDecimals);
     }
 
+    public async getBR():Promise<any> {
+      return parseFloat(await this.calculateBR());
+    }
+
     public async getNSBTPrice():Promise<any> {
       const a = defaultTo(
         ExplorerApi.DEFAULT_NSBT_CURVE_PARAM_A, 
