@@ -28,6 +28,28 @@ app.get('/api/get_current_price', async (req, res) => {
   }
 });
 
+app.get('/api/get_current_nsbt2usdn_price', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getNSBTPrice();
+
+    res.status(200).send(result.toString());
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.get('/api/get_br', async (req, res) => {
+  try {
+    let result = await explorerApiObject.getBR();
+
+    res.status(200).send(result.toString());
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 app.get('/api/get_current_balance', async (req, res) => {
   try {
     let result = await explorerApiObject.getBalance();
