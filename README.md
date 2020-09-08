@@ -3,7 +3,7 @@ Neutrino Public API and Analytics
 
 *API endpoint is hosted at https://beta.neutrino.at/api/explorer*
 
-Method ```get_current_price``` (https://beta.neutrino.at/api/explorer/get_current_price) returns current Waves/USD price on the smart contract (2 decimal precision).
+Method ```get_current_price``` (https://beta.neutrino.at/api/explorer/get_current_price) returns current Waves/USD price on the smart contract (6 decimal precision).
 
 Method ```get_current_balance``` (https://beta.neutrino.at/api/explorer/get_current_balance) returns current total balance of the Neutrino main smart contract.
 
@@ -46,7 +46,7 @@ GET /api/get_current_price
 
 **Response:**
 ```
-0.59
+0.000059
 ```
 
 ## Deployment
