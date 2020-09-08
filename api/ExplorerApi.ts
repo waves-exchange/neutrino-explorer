@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { nodeInteraction } from '@waves/waves-transactions';
-import { indexBy, prop } from 'ramda';
+import { indexBy, prop, defaultTo } from 'ramda';
+import { BigNumber } from '@waves/bignumber';
 
 import { NeutrinoContractKeys } from './contractKeys/NeutrinoContractKeys';
 import { ControlContractKeys } from './contractKeys/ControlContractKeys';
@@ -10,6 +11,8 @@ import { AuctionContractKeys } from './contractKeys/AuctionContractKeys';
 
 export class ExplorerApi {
     static readonly WAVELET: number = (10 ** 8);
+    static readonly EXP: number = 2.718281;
+    static readonly DEFAULT_NSBT_CURVE_PARAM_A: number = 3;
     neutrinoContractAddress: string;
     auctionContractAddress: string;
     controlContractAddress: string;
@@ -92,16 +95,51 @@ export class ExplorerApi {
     }
 
     private async getNeutrinoLockedBalance():Promise<number>{
-      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value/100;
+      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.NeutrinoLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value;
+    }
+
+    private async getWavesLockedBalance(): Promise<number>{
+      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value;
     }
 
     private getSmartContractAddresses(){
       console.log(this.neutrinoContractAddress,this.auctionContractAddress,this.controlContractAddress,this.liquidationContractAddress,this.rpdContractAddress);
     }
 
+    private async calculateBR(): Promise<string> {
+      const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress);
+      const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress);
+      
+      const neutrinoSupply = await this.getNeutrinoLockedBalance() + await this.getAssetQuantity() - neutrinoBalance - liquidationBalance;
+      
+      const neutrinoBalanceWaves = <number>(await nodeInteraction.balanceDetails(this.neutrinoContractAddress, this.nodeUrl)).regular;
+      
+      const reserves = neutrinoBalanceWaves - await this.getWavesLockedBalance();
+      
+      const price = await this.getPrice() * 10 ** this.assetDecimals;
+
+      const _reserves = new BigNumber(reserves);
+      const _price = new BigNumber(price);
+      const _PAULI = new BigNumber(Math.pow(10, 6));
+
+      const fraction1 = _reserves.mul(_price).div(1000000).roundTo(0, BigNumber.ROUND_MODE.ROUND_DOWN);
+      const reservesInUSDN = fraction1.mul(_PAULI).div(ExplorerApi.WAVELET).roundTo(0, BigNumber.ROUND_MODE.ROUND_DOWN);
+      
+      return reservesInUSDN.div(neutrinoSupply).toFixed(12, BigNumber.ROUND_MODE.ROUND_DOWN);
+    }
+
     //Public API methods
     public async getPrice():Promise<any> {
-      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/(10 ** 6);
+      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/(10 ** this.assetDecimals);
+    }
+
+    public async getNSBTPrice():Promise<any> {
+      const a = defaultTo(
+        ExplorerApi.DEFAULT_NSBT_CURVE_PARAM_A, 
+        <number>prop('value', (await nodeInteraction.accountDataByKey(AuctionContractKeys.NSBTCurveParamA, this.neutrinoContractAddress, this.nodeUrl)))
+      );
+      const BR = parseFloat(await this.calculateBR());
+      return Math.pow(ExplorerApi.EXP, a * (BR - 1)).toFixed(this.assetDecimals);
     }
 
     public async getPriceBlocks(start, end):Promise<any>{
