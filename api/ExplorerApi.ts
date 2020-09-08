@@ -143,7 +143,12 @@ export class ExplorerApi {
         <number>prop('value', (await nodeInteraction.accountDataByKey(AuctionContractKeys.NSBTCurveParamA, this.neutrinoContractAddress, this.nodeUrl)))
       );
       const BR = parseFloat(await this.calculateBR());
-      return Math.pow(ExplorerApi.EXP, a * (BR - 1)).toFixed(this.assetDecimals);
+
+      if (BR >= 1) {
+        return Math.pow(ExplorerApi.EXP, a * (BR - 1)).toFixed(this.assetDecimals);
+      } else {
+        return 1/(2 - BR);
+      }
     }
 
     public async getPriceBlocks(start, end):Promise<any>{
