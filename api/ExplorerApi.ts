@@ -144,11 +144,9 @@ export class ExplorerApi {
       );
       const BR = parseFloat(await this.calculateBR());
 
-      if (BR >= 1) {
-        return Math.pow(ExplorerApi.EXP, a * (BR - 1)).toFixed(this.assetDecimals);
-      } else {
-        return (1/(2 - BR)).toFixed(this.assetDecimals);;
-      }
+      const price = BR >= 1 ? Math.pow(ExplorerApi.EXP, a * (BR - 1)) : 1/(2 - BR);
+      
+      return price.toFixed(this.assetDecimals);
     }
 
     public async getPriceBlocks(start, end):Promise<any>{
