@@ -28,7 +28,7 @@ app.get('/api/get_current_price', async (req, res) => {
   }
 });
 
-app.get('/api/get_current_nsbt_price', async (req, res) => {
+app.get('/api/get_current_nsbt2usdn_price', async (req, res) => {
   try {
     let result = await explorerApiObject.getNSBTPrice();
 
