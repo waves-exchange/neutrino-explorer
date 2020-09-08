@@ -147,7 +147,7 @@ export class ExplorerApi {
       if (BR >= 1) {
         return Math.pow(ExplorerApi.EXP, a * (BR - 1)).toFixed(this.assetDecimals);
       } else {
-        return 1/(2 - BR);
+        return (1/(2 - BR)).toFixed(this.assetDecimals);;
       }
     }
 
