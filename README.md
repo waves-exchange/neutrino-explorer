@@ -5,7 +5,7 @@ Neutrino Public API and Analytics
 
 Method ```get_current_price``` (https://beta.neutrino.at/api/explorer/get_current_price) returns current Waves/USD price on the smart contract (6 decimal precision).
 
-Method ```get_current_nsbt_price``` (https://beta.neutrino.at/api/explorer/get_current_nsbt_price) returns current NSBT/USD price on the smart contract (6 decimal precision).
+Method ```get_current_nsbt2usdn_price``` (https://beta.neutrino.at/api/explorer/get_current_nsbt2usdn_price) returns current NSBT/USD price on the smart contract (6 decimal precision).
 
 Method ```get_br``` (https://beta.neutrino.at/api/explorer/get_br) returns current baking ratio (BR).
 
