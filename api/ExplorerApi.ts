@@ -8,6 +8,7 @@ import { ControlContractKeys } from './contractKeys/ControlContractKeys';
 import { RpdContractKeys } from './contractKeys/RpdContractKeys';
 import { AuctionContractKeys } from './contractKeys/AuctionContractKeys';
 
+const ANNUAL_YIELD_MAX_DAYS = 14;
 
 export class ExplorerApi {
     static readonly WAVELET: number = (10 ** 8);
@@ -203,16 +204,16 @@ export class ExplorerApi {
     }
 
     public async getAnnualYield():Promise<number>{
-      let averageDays = 14;
       const stakingAddress = "3P5X7AFNSTjcVoYLXkgRNTqmp51QcWAVESX";
       const txObject = await axios.get(this.nodeUrl+'transactions/address/'+stakingAddress+'/limit/99');
       const txData = txObject.data[0];
 
-      const filteredTxData = txData.filter(item => String(item.sender) === String('3PMj3yGPBEa1Sx9X4TSBFeJCMMaE3wvKR4N')).slice(0,averageDays);
+      const filteredTxData = txData.filter(item => String(item.sender) === String('3PMj3yGPBEa1Sx9X4TSBFeJCMMaE3wvKR4N')).slice(0,ANNUAL_YIELD_MAX_DAYS);
 
       let allRewards = filteredTxData.map(item => item.transfers[0].amount);
       let sumRewards = allRewards.reduce((a,b) => a + b, 0);
-      let annualYield = 365.5*(sumRewards/averageDays)/10**6
+      let averageReward = sumRewards / allRewards.length;
+      let annualYield = 365*averageReward/10**6
       return <number>annualYield;
 
     }
