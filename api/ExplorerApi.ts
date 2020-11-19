@@ -212,7 +212,7 @@ export class ExplorerApi {
 
       let allRewards = filteredTxData.map(item => item.transfers[0].amount);
       let sumRewards = allRewards.reduce((a,b) => a + b, 0);
-      let averageReward = sumRewards / sumRewards.length;
+      let averageReward = sumRewards / allRewards.length;
       let annualYield = 365.5*averageReward/10**6
       return <number>annualYield;
 
