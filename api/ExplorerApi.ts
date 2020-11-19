@@ -203,7 +203,6 @@ export class ExplorerApi {
     }
 
     public async getAnnualYield():Promise<number>{
-      let averageDays = 14;
       const stakingAddress = "3P5X7AFNSTjcVoYLXkgRNTqmp51QcWAVESX";
       const txObject = await axios.get(this.nodeUrl+'transactions/address/'+stakingAddress+'/limit/99');
       const txData = txObject.data[0];
@@ -212,7 +211,8 @@ export class ExplorerApi {
 
       let allRewards = filteredTxData.map(item => item.transfers[0].amount);
       let sumRewards = allRewards.reduce((a,b) => a + b, 0);
-      let annualYield = 365.5*(sumRewards/averageDays)/10**6
+      let averageReward = sumRewards / sumRewards.length;
+      let annualYield = 365.5*averageReward/10**6
       return <number>annualYield;
 
     }
