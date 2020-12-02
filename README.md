@@ -11,7 +11,9 @@ Method ```get_br``` (https://beta.neutrino.at/api/explorer/get_br) returns curre
 
 Method ```get_current_balance``` (https://beta.neutrino.at/api/explorer/get_current_balance) returns current total balance of the Neutrino main smart contract.
 
-Method ```get_total_issued``` (https://beta.neutrino.at/api/explorer/get_total_issued) returns total issued USD-Ns.
+@Deprecated\
+~Method ```get_total_issued``` (https://beta.neutrino.at/api/explorer/get_total_issued) returns total issued USD-Ns.~\
+The new one is https://api.neutrino.at/total-supply/USDN
 
 Method ```get_staked``` (https://beta.neutrino.at/api/explorer/get_staked) returns total Neutrinos in staking.
 
@@ -21,8 +23,9 @@ Method ```get_annual_yield_analytical``` (https://beta.neutrino.at/api/explorer/
 ```
 1+deficit*node_performance_lag_*leasing_share*monetary_constant/staking_share
 ```
-
-Method ```get_circulating_supply``` (https://beta.neutrino.at/api/explorer/get_circulating_supply) returns Neutrinos circulating supply.
+@Deprecated\
+~Method ```get_circulating_supply``` (https://beta.neutrino.at/api/explorer/get_circulating_supply) returns Neutrinos circulating supply.~\
+The new one is https://api.neutrino.at/circulating-supply/USDN
 
 Method ```get_decimals``` (https://beta.neutrino.at/api/explorer/get_decimals) returns USD-N decimals.
 
