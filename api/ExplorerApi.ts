@@ -177,7 +177,7 @@ export class ExplorerApi {
         "expr": "privateNsbtPriceREST()"
       });
 
-      return evaluateResult.data.result.value._1.value.value.value.toFixed(this.assetDecimals);
+      return (evaluateResult.data.result.value._1.value.value.value / 10 ** this.assetDecimals).toFixed(this.assetDecimals);
     }
 
     public async getPriceBlocks(start, end):Promise<any>{
