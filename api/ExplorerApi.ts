@@ -173,7 +173,7 @@ export class ExplorerApi {
         },
         expr: "privateNsbtPriceREST()",
         address: string
-      }>(`${this.nodeUrl}utils/script/evaluate/${this.auctionContractAddress}`, {
+      }>(`${this.nodeUrl}utils/script/evaluate/${process.env.NEUTRINO_REST_CONTRACT_ADDRESS}`, {
         "expr": "privateNsbtPriceREST()"
       });
 
