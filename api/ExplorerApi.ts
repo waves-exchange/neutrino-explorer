@@ -139,15 +139,45 @@ export class ExplorerApi {
     }
 
     public async getNSBTPrice():Promise<any> {
-      const a = defaultTo(
-        ExplorerApi.DEFAULT_NSBT_CURVE_PARAM_A, 
-        <number>prop('value', (await nodeInteraction.accountDataByKey(AuctionContractKeys.NSBTCurveParamA, this.neutrinoContractAddress, this.nodeUrl)))
-      );
-      const BR = parseFloat(await this.calculateBR());
+      let evaluateResult = await axios.post<{
+        result: {
+          type: "Tuple",
+          value: {
+            _1: {
+              type: "IntegerEntry",
+              value: {
+                key: {
+                  type: "String",
+                  value: "nsbt2usdnPrice",
+                }
+                value: {
+                  type: "Int",
+                  value: number
+                }
+              }
+            },
+            _2: {
+              type: "IntegerEntry",
+              value: {
+                key: {
+                  type: "String",
+                  value: "nsbt2wavesPrice",
+                }
+                value: {
+                  type: "Int",
+                  value: number
+                }
+              }
+            }
+          },
+        },
+        expr: "privateNsbtPriceREST()",
+        address: string
+      }>(`${this.nodeUrl}utils/script/evaluate/${this.auctionContractAddress}`, {
+        "expr": "privateNsbtPriceREST()"
+      });
 
-      const price = BR >= 1 ? Math.pow(ExplorerApi.EXP, a * (BR - 1)) : 1/(2 - BR);
-      
-      return price.toFixed(this.assetDecimals);
+      return (evaluateResult.data.result.value._1.value.value.value / 10 ** this.assetDecimals).toFixed(this.assetDecimals);
     }
 
     public async getPriceBlocks(start, end):Promise<any>{
