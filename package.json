@@ -15,7 +15,7 @@
     "@types/ramda": "^0.27.7",
     "@waves/bignumber": "^1.0.0",
     "@waves/waves-transactions": "^3.24.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "crypto-js": "^3.1.9-1",
     "express": "^4.17.1",
     "ramda": "^0.27.0",
