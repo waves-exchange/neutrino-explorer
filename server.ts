@@ -1,11 +1,16 @@
+import { cache } from './api/utils/cache';
+import { getNeutrinoState } from './api/utils/getNeutrinoState';
+
 const express = require('express');
 let app = express();
-const port = process.env.PORT || 8001;
+const port = process.env.PORT || 8080;
 
 const explorerApi = require('./api/ExplorerApi');
 
 const neutrinoContractAddress = process.env.CONTRACT_ADDRESS;
 const nodeUrl = process.env.NODE_URL;
+
+const getNeutrinoInfo = cache(3000, getNeutrinoState);
 
 let explorerApiObject;
 (async function () {
@@ -19,9 +24,9 @@ let explorerApiObject;
 // -------------------
 app.get('/api/get_current_price', async (req, res) => {
   try {
-    let result = await explorerApiObject.getPrice();
+    let result = await getNeutrinoInfo();
 
-    res.status(200).send(result.toString());
+    res.status(200).send(result.currentPrice.toString());
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -41,9 +46,9 @@ app.get('/api/get_current_nsbt2usdn_price', async (req, res) => {
 
 app.get('/api/get_br', async (req, res) => {
   try {
-    let result = await explorerApiObject.getBR();
+    let result = await getNeutrinoInfo();
 
-    res.status(200).send(result.toString());
+    res.status(200).send(result.BR.toString());
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

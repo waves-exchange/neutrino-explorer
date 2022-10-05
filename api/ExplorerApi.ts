@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { nodeInteraction } from '@waves/waves-transactions';
-import { indexBy, prop, defaultTo } from 'ramda';
+import { indexBy, prop } from 'ramda';
 import { BigNumber } from '@waves/bignumber';
 
 import { NeutrinoContractKeys } from './contractKeys/NeutrinoContractKeys';
@@ -69,7 +69,7 @@ export class ExplorerApi {
                             neutrinoAssetId,
                             bondAssetId,
                             assetDecimals
-    }: ExplorerApiOption){
+                        }: ExplorerApiOption) {
         this.neutrinoContractAddress = neutrinoContractAddress;
         this.auctionContractAddress = auctionContractAddress;
         this.controlContractAddress = controlContractAddress;
@@ -83,177 +83,177 @@ export class ExplorerApi {
     }
 
     //Helpers
-    private async getAssetQuantity(){
-      const assetObject = await axios.get(this.nodeUrl+'assets/details/'+this.neutrinoAssetId);
-      const assetQuantity = assetObject.data.quantity;
+    private async getAssetQuantity() {
+        const assetObject = await axios.get(this.nodeUrl + 'assets/details/' + this.neutrinoAssetId);
+        const assetQuantity = assetObject.data.quantity;
 
-      return <number>(assetQuantity);
+        return <number>(assetQuantity);
     }
 
-    private async getNeutrinoBalance(contractAddress){
-      const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, contractAddress, this.nodeUrl);
-      return <number>(assetBalance);
+    private async getNeutrinoBalance(contractAddress) {
+        const assetBalance = await nodeInteraction.assetBalance(this.neutrinoAssetId, contractAddress, this.nodeUrl);
+        return <number>(assetBalance);
     }
 
-    private async getNeutrinoLockedBalance():Promise<number>{
-      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.NeutrinoLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value;
+    private async getNeutrinoLockedBalance(): Promise<number> {
+        return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.NeutrinoLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value;
     }
 
-    private async getWavesLockedBalance(): Promise<number>{
-      return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value;
+    private async getWavesLockedBalance(): Promise<number> {
+        return <number>(await nodeInteraction.accountDataByKey(AuctionContractKeys.WavesLockedBalanceKey, this.neutrinoContractAddress, this.nodeUrl)).value;
     }
 
-    private getSmartContractAddresses(){
-      console.log(this.neutrinoContractAddress,this.auctionContractAddress,this.controlContractAddress,this.liquidationContractAddress,this.rpdContractAddress);
+    private getSmartContractAddresses() {
+        console.log(this.neutrinoContractAddress, this.auctionContractAddress, this.controlContractAddress, this.liquidationContractAddress, this.rpdContractAddress);
     }
 
     private async calculateBR(): Promise<string> {
-      const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress);
-      const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress);
-      
-      const neutrinoSupply = await this.getNeutrinoLockedBalance() + await this.getAssetQuantity() - neutrinoBalance - liquidationBalance;
-      
-      const neutrinoBalanceWaves = <number>(await nodeInteraction.balanceDetails(this.neutrinoContractAddress, this.nodeUrl)).regular;
-      
-      const reserves = neutrinoBalanceWaves - await this.getWavesLockedBalance();
-      
-      const price = await this.getPrice() * 10 ** this.assetDecimals;
+        const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress);
+        const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress);
 
-      const _reserves = new BigNumber(reserves);
-      const _price = new BigNumber(price);
-      const _PAULI = new BigNumber(Math.pow(10, 6));
+        const neutrinoSupply = await this.getNeutrinoLockedBalance() + await this.getAssetQuantity() - neutrinoBalance - liquidationBalance;
 
-      const fraction1 = _reserves.mul(_price).div(1000000).roundTo(0, BigNumber.ROUND_MODE.ROUND_DOWN);
-      const reservesInUSDN = fraction1.mul(_PAULI).div(ExplorerApi.WAVELET).roundTo(0, BigNumber.ROUND_MODE.ROUND_DOWN);
-      
-      return reservesInUSDN.div(neutrinoSupply).toFixed(12, BigNumber.ROUND_MODE.ROUND_DOWN);
+        const neutrinoBalanceWaves = <number>(await nodeInteraction.balanceDetails(this.neutrinoContractAddress, this.nodeUrl)).regular;
+
+        const reserves = neutrinoBalanceWaves - await this.getWavesLockedBalance();
+
+        const price = await this.getPrice() * 10 ** this.assetDecimals;
+
+        const _reserves = new BigNumber(reserves);
+        const _price = new BigNumber(price);
+        const _PAULI = new BigNumber(Math.pow(10, 6));
+
+        const fraction1 = _reserves.mul(_price).div(1000000).roundTo(0, BigNumber.ROUND_MODE.ROUND_DOWN);
+        const reservesInUSDN = fraction1.mul(_PAULI).div(ExplorerApi.WAVELET).roundTo(0, BigNumber.ROUND_MODE.ROUND_DOWN);
+
+        return reservesInUSDN.div(neutrinoSupply).toFixed(12, BigNumber.ROUND_MODE.ROUND_DOWN);
     }
 
     //Public API methods
-    public async getPrice():Promise<any> {
-      return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value/(10 ** this.assetDecimals);
+    public async getPrice(): Promise<any> {
+        return <number>(await nodeInteraction.accountDataByKey(ControlContractKeys.PriceKey, this.controlContractAddress, this.nodeUrl)).value / (10 ** this.assetDecimals);
     }
 
-    public async getBR():Promise<any> {
-      return parseFloat(await this.calculateBR());
+    public async getBR(): Promise<any> {
+        return parseFloat(await this.calculateBR());
     }
 
-    public async getNSBTPrice():Promise<any> {
-      let evaluateResult = await axios.post<{
-        result: {
-          type: "Tuple",
-          value: {
-            _1: {
-              type: "IntegerEntry",
-              value: {
-                key: {
-                  type: "String",
-                  value: "nsbt2usdnPrice",
-                }
+    public async getNSBTPrice(): Promise<any> {
+        let evaluateResult = await axios.post<{
+            result: {
+                type: 'Tuple',
                 value: {
-                  type: "Int",
-                  value: number
-                }
-              }
+                    _1: {
+                        type: 'IntegerEntry',
+                        value: {
+                            key: {
+                                type: 'String',
+                                value: 'nsbt2usdnPrice',
+                            }
+                            value: {
+                                type: 'Int',
+                                value: number
+                            }
+                        }
+                    },
+                    _2: {
+                        type: 'IntegerEntry',
+                        value: {
+                            key: {
+                                type: 'String',
+                                value: 'nsbt2wavesPrice',
+                            }
+                            value: {
+                                type: 'Int',
+                                value: number
+                            }
+                        }
+                    }
+                },
             },
-            _2: {
-              type: "IntegerEntry",
-              value: {
-                key: {
-                  type: "String",
-                  value: "nsbt2wavesPrice",
+            expr: 'privateNsbtPriceREST()',
+            address: string
+        }>(`${this.nodeUrl}utils/script/evaluate/${process.env.NEUTRINO_REST_CONTRACT_ADDRESS}`, {
+            'expr': 'privateNsbtPriceREST()'
+        });
+
+        return (evaluateResult.data.result.value._1.value.value.value / 10 ** this.assetDecimals).toFixed(this.assetDecimals);
+    }
+
+    public async getPriceBlocks(start, end): Promise<any> {
+
+        let startBlock = start;
+        let endBlock = end;
+        let prefix = 'price_';
+
+        let returnArray = [];
+
+        for (let i = startBlock; i <= endBlock; i++) {
+            let key = prefix + i;
+            let priceObject = (await nodeInteraction.accountDataByKey(key, this.controlContractAddress, this.nodeUrl));
+
+            try {
+                let objKey = String(i);
+                if (priceObject == null) {
+                    returnArray.push({ [objKey]: null });
+                } else {
+                    returnArray.push({ [objKey]: priceObject.value });
                 }
-                value: {
-                  type: "Int",
-                  value: number
-                }
-              }
+            } catch (e) {
+                console.log(e);
             }
-          },
-        },
-        expr: "privateNsbtPriceREST()",
-        address: string
-      }>(`${this.nodeUrl}utils/script/evaluate/${process.env.NEUTRINO_REST_CONTRACT_ADDRESS}`, {
-        "expr": "privateNsbtPriceREST()"
-      });
-
-      return (evaluateResult.data.result.value._1.value.value.value / 10 ** this.assetDecimals).toFixed(this.assetDecimals);
-    }
-
-    public async getPriceBlocks(start, end):Promise<any>{
-
-      let startBlock = start;
-      let endBlock = end;
-      let prefix = "price_";
-
-      let returnArray = [];
-
-      for (let i = startBlock; i <= endBlock; i++) {
-        let key = prefix+i;
-        let priceObject = (await nodeInteraction.accountDataByKey(key,this.controlContractAddress,this.nodeUrl));
-
-        try{
-          let objKey = String(i);
-          if (priceObject == null) {
-            returnArray.push({[objKey]:null});
-          } else {
-            returnArray.push({[objKey]:priceObject.value});
-          }
-        } catch(e){
-          console.log(e);
         }
-      }
-      return returnArray;
+        return returnArray;
     }
 
-    public async getBalance():Promise<number> {
-      return (await nodeInteraction.balance(this.neutrinoContractAddress, this.nodeUrl)/ExplorerApi.WAVELET);
+    public async getBalance(): Promise<number> {
+        return (await nodeInteraction.balance(this.neutrinoContractAddress, this.nodeUrl) / ExplorerApi.WAVELET);
     }
 
-    public async getTotalIssued():Promise<number>{
-      const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress)/(10**this.assetDecimals);
-      const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress)/(10**this.assetDecimals);
-      const balanceLockNeutrino = Number((await nodeInteraction.accountDataByKey("balance_lock_neutrino", this.neutrinoContractAddress, this.nodeUrl)).value)/(10**this.assetDecimals);
+    public async getTotalIssued(): Promise<number> {
+        const neutrinoBalance = await this.getNeutrinoBalance(this.neutrinoContractAddress) / (10 ** this.assetDecimals);
+        const liquidationBalance = await this.getNeutrinoBalance(this.liquidationContractAddress) / (10 ** this.assetDecimals);
+        const balanceLockNeutrino = Number((await nodeInteraction.accountDataByKey('balance_lock_neutrino', this.neutrinoContractAddress, this.nodeUrl)).value) / (10 ** this.assetDecimals);
 
-      return <number>(10**12-neutrinoBalance-liquidationBalance+Number(balanceLockNeutrino));
+        return <number>(10 ** 12 - neutrinoBalance - liquidationBalance + Number(balanceLockNeutrino));
     }
 
-    public async getStaked():Promise<number>{
-      return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey+"_"+this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value/10**this.assetDecimals;
+    public async getStaked(): Promise<number> {
+        return <number>(await nodeInteraction.accountDataByKey(RpdContractKeys.BalanceKey + '_' + this.neutrinoAssetId, this.rpdContractAddress, this.nodeUrl)).value / 10 ** this.assetDecimals;
     }
 
-    public async getAnnualYieldAnalytical():Promise<number>{
-      const monetaryConstant = 6.85;
-      const leasingShare = 0.9;
-      const nodePerfLagCoefficient = 0.99;
-      const stakingShare = await this.getStaked()/await this.getTotalIssued();
-      const deficitPerCent = await this.getDeficitPerCent();
-      let deficitCoefficient = 1+(deficitPerCent*0.01);
+    public async getAnnualYieldAnalytical(): Promise<number> {
+        const monetaryConstant = 6.85;
+        const leasingShare = 0.9;
+        const nodePerfLagCoefficient = 0.99;
+        const stakingShare = await this.getStaked() / await this.getTotalIssued();
+        const deficitPerCent = await this.getDeficitPerCent();
+        let deficitCoefficient = 1 + (deficitPerCent * 0.01);
 
-      return <number>(deficitCoefficient*nodePerfLagCoefficient*leasingShare*monetaryConstant/stakingShare);
+        return <number>(deficitCoefficient * nodePerfLagCoefficient * leasingShare * monetaryConstant / stakingShare);
     }
 
-    public async getAnnualYield():Promise<number>{
-      const stakingAddress = "3P5X7AFNSTjcVoYLXkgRNTqmp51QcWAVESX";
-      const txObject = await axios.get(this.nodeUrl+'transactions/address/'+stakingAddress+'/limit/99');
-      const txData = txObject.data[0];
+    public async getAnnualYield(): Promise<number> {
+        const stakingAddress = '3P5X7AFNSTjcVoYLXkgRNTqmp51QcWAVESX';
+        const txObject = await axios.get(this.nodeUrl + 'transactions/address/' + stakingAddress + '/limit/99');
+        const txData = txObject.data[0];
 
-      const filteredTxData = txData.filter(item => String(item.sender) === String('3PMj3yGPBEa1Sx9X4TSBFeJCMMaE3wvKR4N')).slice(0,ANNUAL_YIELD_MAX_DAYS);
+        const filteredTxData = txData.filter(item => String(item.sender) === String('3PMj3yGPBEa1Sx9X4TSBFeJCMMaE3wvKR4N')).slice(0, ANNUAL_YIELD_MAX_DAYS);
 
-      let allRewards = filteredTxData.map(item => item.transfers[0].amount);
-      let sumRewards = allRewards.reduce((a,b) => a + b, 0);
-      let averageReward = sumRewards / allRewards.length;
-      let annualYield = 365*averageReward/10**6
-      return <number>annualYield;
+        let allRewards = filteredTxData.map(item => item.transfers[0].amount);
+        let sumRewards = allRewards.reduce((a, b) => a + b, 0);
+        let averageReward = sumRewards / allRewards.length;
+        let annualYield = 365 * averageReward / 10 ** 6;
+        return <number>annualYield;
 
     }
 
-    public async getCirculatingSupply():Promise<number>{
-      return <number>(await this.getTotalIssued() - await this.getStaked());
+    public async getCirculatingSupply(): Promise<number> {
+        return <number>(await this.getTotalIssued() - await this.getStaked());
     }
 
-    public async getCirculatingSupplyNoDec():Promise<number>{
-      return <number>((await this.getTotalIssued() - await this.getStaked()) * (10 ** this.assetDecimals));
+    public async getCirculatingSupplyNoDec(): Promise<number> {
+        return <number>((await this.getTotalIssued() - await this.getStaked()) * (10 ** this.assetDecimals));
     }
 
     public async getDeficit(totalIssued: number): Promise<number> {
@@ -264,10 +264,10 @@ export class ExplorerApi {
         return (totalIssued - reserve * price);
     }
 
-    public async getLockedForSwap():Promise<number>{
-      let lockedForSwapPauli = await axios.get(this.nodeUrl+'addresses/data/'+this.neutrinoContractAddress+'/'+'balance_lock_neutrino');
-      let lockedForSwap = lockedForSwapPauli.data.value/1000000;
-      return <number>(lockedForSwap);
+    public async getLockedForSwap(): Promise<number> {
+        let lockedForSwapPauli = await axios.get(this.nodeUrl + 'addresses/data/' + this.neutrinoContractAddress + '/' + 'balance_lock_neutrino');
+        let lockedForSwap = lockedForSwapPauli.data.value / 1000000;
+        return <number>(lockedForSwap);
     }
 
     public async getDeficitPerCent(): Promise<number> {
@@ -275,30 +275,30 @@ export class ExplorerApi {
         return (-1 * (await this.getDeficit(totalIssued) / totalIssued)) * 100;
     }
 
-    public async getTotalBondsRest():Promise<number>{
-      let orders_object = await axios.get('https://beta.neutrino.at/api/v1/bonds/usd-nb_usd-n/orders');
-      let orders_object_data = orders_object.data;
+    public async getTotalBondsRest(): Promise<number> {
+        let orders_object = await axios.get('https://beta.neutrino.at/api/v1/bonds/usd-nb_usd-n/orders');
+        let orders_object_data = orders_object.data;
 
-      let restAmount = 0;
-      for (let j of orders_object_data){
-        let delta = j.restAmount;
-        restAmount += delta;
-      }
+        let restAmount = 0;
+        for (let j of orders_object_data) {
+            let delta = j.restAmount;
+            restAmount += delta;
+        }
 
-      return <number>(restAmount);
+        return <number>(restAmount);
     }
 
-    public async getTotalLiquidation():Promise<number>{
-      let orders_object = await axios.get('https://beta.neutrino.at/api/v1/liquidate/usd-nb_usd-n/orders');
-      let orders_object_data = orders_object.data;
+    public async getTotalLiquidation(): Promise<number> {
+        let orders_object = await axios.get('https://beta.neutrino.at/api/v1/liquidate/usd-nb_usd-n/orders');
+        let orders_object_data = orders_object.data;
 
-      let restAmount = 0;
-      for (let j of orders_object_data){
-        let delta = j.restTotal;
-        restAmount += delta;
-      }
-      console.log(restAmount)
-      return <number>(restAmount);
+        let restAmount = 0;
+        for (let j of orders_object_data) {
+            let delta = j.restTotal;
+            restAmount += delta;
+        }
+        console.log(restAmount);
+        return <number>(restAmount);
     }
 
     // public async getLiquidateBondPrice():Promise<number>{
@@ -333,4 +333,4 @@ type ExplorerApiOption = {
     neutrinoAssetId: string;
     bondAssetId: string;
     assetDecimals: number;
-} ;
+};
