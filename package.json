@@ -4,23 +4,31 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "ts-node --log-error server.ts",
+    "start": "ts-node --log-error src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/es6-promise": "^3.3.0",
-    "@types/node": "^12.12.7",
+    "@tsigel/async-map": "^0.0.1",
+    "@types/koa": "^2.13.5",
+    "@types/koa-router": "^7.4.4",
+    "@types/marked": "^4.0.8",
+    "@types/node": "^18.11.12",
     "@types/ramda": "^0.27.7",
     "@waves/bignumber": "^1.0.0",
+    "@waves/node-api-js": "^1.3.0",
     "@waves/waves-transactions": "^3.24.0",
-    "axios": "^0.21.1",
+    "axios": "^1.0.0",
     "crypto-js": "^3.1.9-1",
-    "express": "^4.17.1",
+    "koa": "^2.14.1",
+    "koa-router": "^12.0.0",
+    "marked": "^4.2.4",
     "ramda": "^0.27.0",
-    "request": "^2.88.0",
-    "ts-node": "^8.5.4",
-    "typescript": "^3.7.3"
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
   }
 }
