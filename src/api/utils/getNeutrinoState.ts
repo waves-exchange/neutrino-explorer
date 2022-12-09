@@ -6,9 +6,13 @@ import {
     EvaluateTupleDataType
 } from './evaluate';
 import { parseNeutrinoState } from './parseNeutrinoState';
+import { NEUTRINO_REST } from '../../constants';
+import { cache } from './cache';
 
-export const getNeutrinoState = () => evaluate<NeutrinoRestEvaluateResponse>(process.env.NEUTRINO_REST_CONTRACT_ADDRESS, 'neutrinoStatsREADONLY()')
+const getState = () => evaluate<NeutrinoRestEvaluateResponse>(NEUTRINO_REST, 'neutrinoStatsREADONLY()')
     .then((r) => parseNeutrinoState(r.result.value._2.value));
+
+export const getNeutrinoState = cache(4000, getState);
 
 export type NeutrinoRestEvaluateResponse = EvaluateResult<
     EvaluateTupleDataType<{

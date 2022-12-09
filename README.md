@@ -1,4 +1,4 @@
-# neutrino-explorer
+# Neutrino Explorer
 Neutrino Public API and Analytics
 
 *API endpoint is hosted at https://beta.neutrino.at/api/explorer*
@@ -11,51 +11,14 @@ Method ```get_br``` (https://beta.neutrino.at/api/explorer/get_br) returns curre
 
 Method ```get_current_balance``` (https://beta.neutrino.at/api/explorer/get_current_balance) returns current total balance of the Neutrino main smart contract.
 
-@Deprecated\
-~Method ```get_total_issued``` (https://beta.neutrino.at/api/explorer/get_total_issued) returns total issued USD-Ns.~\
-The new one is https://api.neutrino.at/total-supply/USDN
+Method ```get_total_issued``` (https://beta.neutrino.at/api/explorer/get_total_issued) returns total issued USD-Ns.
 
 Method ```get_staked``` (https://beta.neutrino.at/api/explorer/get_staked) returns total Neutrinos in staking.
 
 Method ```get_annual_yield``` (https://beta.neutrino.at/api/explorer/get_annual_yield) returns expected annual staking ROI based on averaging 14 recent rewards.
 
-Method ```get_annual_yield_analytical``` (https://beta.neutrino.at/api/explorer/get_annual_yield_analytical) returns expected annual staking ROI calculated as an analytical approximation based on the formula below:
-```
-1+deficit*node_performance_lag_*leasing_share*monetary_constant/staking_share
-```
-@Deprecated\
-~Method ```get_circulating_supply``` (https://beta.neutrino.at/api/explorer/get_circulating_supply) returns Neutrinos circulating supply.~\
-The new one is https://api.neutrino.at/circulating-supply/USDN
+Method ```get_circulating_supply``` (https://beta.neutrino.at/api/explorer/get_circulating_supply) returns Neutrinos circulating supply.
 
 Method ```get_decimals``` (https://beta.neutrino.at/api/explorer/get_decimals) returns USD-N decimals.
 
-Method ```get_circulating_supply_no_dec``` (https://beta.neutrino.at/api/explorer/get_circulating_supply_no_dec) returns Neutrinos circulating supply with no decimals.
-
-Method ```get_deficit``` (https://beta.neutrino.at/api/explorer/get_deficit) returns deficit (when positive) and surplus (when negative) on the Neutrino smart contract.
-
 Method ```get_price_blocks?start=<block_height>&end=<block_height>``` (https://beta.neutrino.at/api/explorer/get_price_blocks?start=1853530&end=1853556) returns JSON that shows blocks where the price was finalized.
-
-Method ```get_locked_for_swap``` (https://beta.neutrino.at/api/explorer/get_locked_for_swap) returns USDNs locked on the Neutrino smart contract.
-
-Method ```get_deficit_per_cent``` (https://beta.neutrino.at/api/explorer/get_deficit_per_cent) returns deficit in percent.
-
-Method ```get_total_bonds_rest``` (https://beta.neutrino.at/api/explorer/get_total_bonds_rest) returns bonds left to be bought.
-
-Method ```get_total_liquidation``` (https://beta.neutrino.at/api/explorer/get_total_liquidation) returns bonds left to be liquidated.
-
-
-## Example
-### Getting current price
-
-```
-GET /api/get_current_price
-```
-
-**Response:**
-```
-0.000059
-```
-
-## Deployment
-Simply run ```deploy.sh``` as root to build and launch the Docker container.
-Configuration (*neutrino contract address* and *node url*) is declared in *server.ts*.
