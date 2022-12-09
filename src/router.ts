@@ -10,9 +10,9 @@ import { getConstantM } from './api/getConstantM';
 import { getHomeM } from './api/getHomeM';
 
 export const router = new Router();
-export const home = new Router();
 
 router
+    .get('/', getHomeM)
     .get('/get_current_price', getNeutrinoInfoM('currentPrice'))
     .get('/get_current_nsbt2usdn_price', getNeutrinoInfoM('nsbt2usdnPrice'))
     .get('/get_br', getNeutrinoInfoM('BR'))
@@ -23,9 +23,5 @@ router
     .get('/get_circulating_supply', getCirculatingSupplyUSDNM)
     .get('/get_decimals', getConstantM(USDN_PRECISION))
     .get('/get_price_blocks', getPriceBlocksM);
-
-home
-    .get('/', getHomeM);
-
 
 console.log('Router ready.');

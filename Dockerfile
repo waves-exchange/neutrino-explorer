@@ -4,8 +4,7 @@ COPY package.json tsconfig.json /app/
 
 WORKDIR /app
 
-COPY src/api /app/api
-COPY src/server.ts /app/server.ts
+COPY src /app
 
 RUN npm install
 
