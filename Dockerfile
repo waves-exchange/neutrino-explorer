@@ -1,11 +1,11 @@
 FROM node:12-alpine
 
-COPY package.json tsconfig.json /app/
-
 WORKDIR /app
 
-COPY src /app
+COPY package.json tsconfig.json /app/
 
 RUN npm install
+
+COPY src /app
 
 ENTRYPOINT [ "npm", "run", "start" ]
