@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { prop } from 'ramda';
+import { NODE_URL } from '../../constants';
 
 export const evaluate = <Result extends EvaluateResult<any>>(
     contract: string,
     expression: string
 ): Promise<Result> =>
-    axios.post<Result>(`${process.env.NODE_URL}utils/script/evaluate/${contract}`, { expr: expression })
+    axios.post<Result>(`${NODE_URL}utils/script/evaluate/${contract}`, { expr: expression })
         .then<EvaluateErrorResult | Result>(prop('data'))
         .then<Result>((data) => {
             if (!data || 'error' in data) {

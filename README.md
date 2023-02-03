@@ -5,7 +5,10 @@ Neutrino Public API and Analytics
 
 Method ```get_current_price``` (https://neutrino.at/api/explorer/get_current_price) returns current Waves/USD price on the smart contract (6 decimal precision).
 
-Method ```get_current_nsbt2usdn_price``` (https://neutrino.at/api/explorer/get_current_nsbt2usdn_price) returns current NSBT/USD price on the smart contract (6 decimal precision).
+@deprecated
+Method ```get_current_nsbt2usdn_price``` (https://neutrino.at/api/explorer/get_current_nsbt2usdn_price) returns current NSBT/USDN price on the smart contract (6 decimal precision).
+
+Method ```get_current_nsbt2xtn_price``` (https://neutrino.at/api/explorer/get_current_nsbt2xtn_price) returns current NSBT/USDN price on the smart contract (6 decimal precision).
 
 Method ```get_br``` (https://neutrino.at/api/explorer/get_br) returns current baking ratio (BR).
 
@@ -22,3 +25,6 @@ Method ```get_circulating_supply``` (https://neutrino.at/api/explorer/get_circul
 Method ```get_decimals``` (https://neutrino.at/api/explorer/get_decimals) returns USD-N decimals.
 
 Method ```get_price_blocks?start=<block_height>&end=<block_height>``` (https://neutrino.at/api/explorer/get_price_blocks?start=1853530&end=1853556) returns JSON that shows blocks where the price was finalized.
+
+Method ```get_xtn_distribution/limit/<limit>/offset/<offset>?direction=<asc|desc>``` (https://neutrino.at/api/explorer/get_xtn_distribution/limit/100/offset/0) returns JSON with address and balance of XNT token.
+Limit must be in range from 1 to 1000, offset must be greater or equal to 0. Query param direction must be one of "asc" or "desc". "desc" is default value. 
