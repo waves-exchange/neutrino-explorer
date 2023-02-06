@@ -29,8 +29,8 @@ export class NotFound extends ServerError {
 }
 
 export class InternalError extends ServerError {
-    constructor(details?: string) {
-        super(500, details ?? 'InternalServerError');
+    constructor(message?: string, details?: string) {
+        super(500, message ?? 'InternalServerError', details);
     }
 }
 
